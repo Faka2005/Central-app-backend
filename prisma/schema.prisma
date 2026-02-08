@@ -108,3 +108,12 @@ model Surah {
 
   @@unique([number, reciterId]) // 1 sourate unique par récitateur
 }
+model Service {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  link        String
+  etat        Boolean  @default(false) // false = en développement, true = actif
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

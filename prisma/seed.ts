@@ -1,3 +1,35 @@
+//import {prisma} from '../server'
+//
+//
+//async function main() {
+//  const services = [
+//{
+//  name: "Service de récitation",
+//  description: "Écoutez et gérez vos sourates préférées avec playlist",
+//  link: "/recitation",
+//  etat: true, // true si le service est actif
+//}
+//
+//  ];
+//
+//  for (const s of services) {
+//    await prisma.service.upsert({
+//      where: { name: s.name },
+//      update: s,
+//      create: s,
+//    });
+//  }
+//
+//  console.log("Seed terminé ✅");
+//}
+//
+//main()
+//  .catch((e) => console.error(e))
+//  .finally(async () => {
+//    await prisma.$disconnect();
+//  });
+//npx prisma db push     
+//npx ts-node prisma/seed.ts
 import {prisma} from '../server'
 const surahs = [
   "Al-Fatiha",
@@ -118,12 +150,12 @@ const surahs = [
 async function main() {
   // 1️⃣ Créer le récitateur
   const reciter = await prisma.reciter.upsert({
-    where: { slug: 'yasser-al-dossary' },
+    where: { slug: 'abdulbasit_warsh' },
     update: {},
     create: {
-      name: 'Yasser Al-Dossary',
-      slug: 'yasser-al-dossary',
-      basePath: '/Récitateur/Yasser_Al_Dossary',
+      name: 'Abdulbasit_Warsh',
+      slug: 'abdulbasit_warsh',
+      basePath: '/Récitateur/Abdulbasit_Warsh',
     },
   })
 

@@ -7,9 +7,9 @@ import userRoute from "./routes/users.routes";
 import sourateRoute from "./routes/sourate.routes";
 import reciterRoute from "./routes/reciter.routes";
 import { Secret } from "jsonwebtoken";
+import servicesRoute from "./routes/services.routes";
 var jwt = require("jsonwebtoken");
 import bcrypt from "bcrypt";
-import { ReplOptions } from "node:repl";
 const app = express();
 app.use(express.json()); // parse JSON bodies
 var cors =require('cors')
@@ -18,7 +18,9 @@ app.use(cors({ origin: "http://localhost:5173" }));
 
 
 
-app.use("/Récitateur", express.static("public/Récitateur"));
+app.use("/reciters", express.static("public/reciters"));
+
+
 
 // Adapter Prisma (optionnel si tu veux utiliser PrismaPg)
 const connectionString = process.env.DATABASE_URL!;
@@ -30,19 +32,10 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 app.use("/users", userRoute);
 app.use("/surahs", sourateRoute);
 app.use("/reciter", reciterRoute);
-
+app.use("/services", servicesRoute);
 app.get('/',(req:Request,res:Response)=>{
   res.send('Bonjour');
 })
-
-
-
-
-
-
-
-
-
 
 
 app.post("/auth/register", async (req: Request, res: Response) => {
