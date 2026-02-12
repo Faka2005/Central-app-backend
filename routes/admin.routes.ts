@@ -14,7 +14,21 @@ router.get('/', async (req, res) => {
   }
 });
 
-
+router.put('/:id', async (req, res) => {
+  try {
+    const user = await prisma.user.find({
+      where:{id:req.params.id}
+    });
+    if(!user){
+      return res.json({error:"L'utilisateur n'éxiste pas"})
+    }
+    
+    res.json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'DB error' });
+  }
+});
 
 
 // DELETE /users/:id → supprimer un utilisateur
