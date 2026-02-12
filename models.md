@@ -212,6 +212,57 @@ model LessonProgress {
 
   @@unique([userId, lessonId])
 }
+
+
+model Interest {
+  id       String            @id @default(uuid())
+  name     String            @unique
+  profils  ProfilInterest[]
+}
+
+model ProfilInterest {
+  profilId   String
+  interestId String
+  profil     Profil   @relation(fields: [profilId], references: [id])
+  interest   Interest @relation(fields: [interestId], references: [id])
+
+  @@id([profilId, interestId])
+}
+
+model Friend {
+  id        String   @id @default(uuid())
+  userId    String
+  friendId  String
+  status    String   @default("pending") // "pending", "accepted", "blocked"
+  createdAt DateTime @default(now())
+
+  user      User     @relation("UserFriends", fields: [userId], references: [id])
+  friend    User     @relation("UserFriendOf", fields: [friendId], references: [id])
+
+  @@unique([userId, friendId]) // éviter les doublons
+}
+
+model Reciter {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  basePath  String   // ex: /files/Yasser_Al_Dossary
+  createdAt DateTime @default(now())
+
+  surahs    Surah[]
+}
+
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  link        String
+  etat        Boolean  @default(false) // false = en développement, true = actif
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 ```
 
 ---
