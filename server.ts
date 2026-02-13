@@ -4,12 +4,14 @@ import express, { Request, Response, NextFunction } from "express";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "./generated/prisma/client";
 import userRoute from "./routes/users.routes";
-import sourateRoute from "./routes/sourate.routes";
+import passwordRoute from "./routes/passwords.routes";
 import reciterRoute from "./routes/reciter.routes";
+import adminRoute  from "./routes/admin.routes";
 import { Secret } from "jsonwebtoken";
 import servicesRoute from "./routes/services.routes";
 var jwt = require("jsonwebtoken");
 import bcrypt from "bcrypt";
+import path from 'path';
 const app = express();
 app.use(express.json()); // parse JSON bodies
 var cors =require('cors')
@@ -30,9 +32,15 @@ export const prisma = new PrismaClient({ adapter });
 const JWT_SECRET: Secret = process.env.JWT_SECRET || "devsecret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 app.use("/users", userRoute);
-app.use("/surahs", sourateRoute);
+app.use("/users",adminRoute);
+app.use("/password", passwordRoute);
 app.use("/reciter", reciterRoute);
 app.use("/services", servicesRoute);
+app.use(
+  "/test",
+  express.static(path.resolve("coverage/lcov-report"))
+);
+
 app.get('/',(req:Request,res:Response)=>{
   res.send('Bonjour');
 })
@@ -74,15 +82,12 @@ app.post("/auth/register", async (req: Request, res: Response) => {
         isTutor: false,
       },
     });
-
-
-
     res.status(201).json({
       user: { id: user.id, email: user.email, username: user.username },
       
     });
   } catch (err: any) {
-    console.error(err);
+    
     res.status(500).json({ error: "DB error" });
   }
 });
@@ -103,12 +108,13 @@ app.post("/auth/login", async (req: Request, res: Response) => {
       expiresIn: JWT_EXPIRES_IN,
     });
 
+
     res.status(200).json({
       user: { id: user.id, email: user.email, username: user.username },
       token,
     });
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: "DB error" });
   }
 });
@@ -133,7 +139,6 @@ app.delete("/auth/me/:id", async (req: Request, res: Response) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Supprimer le profil lié (si relation 1–1)
     await prisma.profil.deleteMany({
       where: { userId: id },
     });

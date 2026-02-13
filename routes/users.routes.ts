@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     const users = await prisma.user.findMany();
     res.json(users);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: 'DB error' });
   }
 });
@@ -24,7 +24,7 @@ router.get('/:id', async (req, res) => {
     if (!user) return res.status(404).json({ error: 'User not found' });
     res.json(user);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: 'DB error' });
   }
 });

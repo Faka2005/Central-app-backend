@@ -17,7 +17,7 @@ router.get("/", async (req: Request, res: Response) => {
     const services = await prisma.service.findMany();
     res.json(services);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: "Erreur base de données" });
   }
 });
@@ -28,7 +28,7 @@ router.get("/", async (req: Request, res: Response) => {
  */
 router.get("/:id", async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id.toString(), 10);
     if (isNaN(id)) return res.status(400).json({ error: "ID invalide" });
 
     const service = await prisma.service.findUnique({
@@ -39,7 +39,7 @@ router.get("/:id", async (req: Request, res: Response) => {
 
     res.json(service);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: "Erreur base de données" });
   }
 });
@@ -70,7 +70,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     res.status(201).json({ message: "Service créé avec succès", service });
   } catch (err: any) {
-    console.error(err);
+    
     if (err.code === "P2002") {
       return res.status(409).json({ error: "Un service avec ce nom existe déjà" });
     }
@@ -84,7 +84,7 @@ router.post("/", async (req: Request, res: Response) => {
  */
 router.put("/:id", async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id.toString(), 10);
     const { name, description, link, etat } = req.body;
 
     if (isNaN(id)) return res.status(400).json({ error: "ID invalide" });
@@ -107,7 +107,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 
     res.json({ message: "Service mis à jour", service });
   } catch (err: any) {
-    console.error(err);
+    
     if (err.code === "P2025") {
       return res.status(404).json({ error: "Service non trouvé" });
     }
@@ -124,7 +124,7 @@ router.put("/:id", async (req: Request, res: Response) => {
  */
 router.delete("/:id", async (req: Request, res: Response) => {
   try {
-    const id = parseInt(req.params.id, 10);
+    const id = parseInt(req.params.id.toString(), 10);
     if (isNaN(id)) return res.status(400).json({ error: "ID invalide" });
 
     const deleted = await prisma.service.delete({
@@ -133,7 +133,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
     res.json({ message: "Service supprimé", service: deleted });
   } catch (err: any) {
-    console.error(err);
+    
     if (err.code === "P2025") {
       return res.status(404).json({ error: "Service non trouvé" });
     }

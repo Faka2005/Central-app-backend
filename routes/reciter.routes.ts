@@ -25,7 +25,7 @@ router.get("/", async (_req: Request, res: Response) => {
     });
     res.json(reciters);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: "DB error" });
   }
 });
@@ -34,33 +34,32 @@ router.get("/", async (_req: Request, res: Response) => {
  * GET /reciters/:slug
  */
 // GET /reciter/:slug
-router.get("/:slug", async (req: Request, res: Response) => {
- 
-  try {
-    // ⚠️ Ici on force req.params.slug à être un string
-    const slug = Array.isArray(req.params.slug) ? req.params.slug[0] : req.params.slug;
-
-    const reciter = await prisma.reciter.findUnique({
-      where: { slug },
-      include: {
-        surahs: {
-          orderBy: { number: "asc" },
-        },
-      },
-    });
-
-    if (!reciter) return res.status(404).json({ error: "Reciter not found" });
-      
-
-    res.json({
-      reciter,
- 
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "DB error" });
-  }
-});
+//router.get("/:slug", async (req: Request, res: Response) => {
+// 
+//  try {
+//    const slug =getString(req.params.slug);
+//
+//    const reciter = await prisma.reciter.findUnique({
+//      where: { slug },
+//      include: {
+//        surahs: {
+//          orderBy: { number: "asc" },
+//        },
+//      },
+//    });
+//
+//    if (!reciter) return res.status(404).json({ error: "Reciter not found" });
+//      
+//
+//    res.json({
+//      reciter,
+// 
+//    });
+//  } catch (err) {
+//    
+//    res.status(500).json({ error: "DB error" });
+//  }
+//});
 
 
 /**
@@ -82,7 +81,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     res.status(201).json(reciter);
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: "DB error" });
   }
 });
@@ -96,7 +95,7 @@ router.delete("/:id", async (req: Request, res: Response) => {
     await prisma.reciter.delete({ where: { id } });
     res.json({ success: true });
   } catch (err) {
-    console.error(err);
+    
     res.status(500).json({ error: "DB error" });
   }
 });

@@ -23,7 +23,7 @@ model User {
   profil    Profil?  @relation("UserProfil")
     sentFriendRequests     Friend[] @relation("UserFriends")    // user qui envoie
   receivedFriendRequests Friend[] @relation("UserFriendOf")  // user qui reçoit
-  //passwords Password[] @relation("UserPasswords")
+  passwords Password[] @relation("UserPasswords")
 }
 
 model Profil {
@@ -88,7 +88,7 @@ model Reciter {
   basePath  String   // ex: /files/Yasser_Al_Dossary
   createdAt DateTime @default(now())
 
-  surahs    Surah[]
+
 }
 
 
@@ -103,17 +103,17 @@ model Service {
 }
 
 
-//model Password {
-//  id          String   @id @default(uuid())
-//  title       String
-//  description String
-//  site        String
-//  email       String
-//  password    String
-//
-//  createdAt   DateTime @default(now())
-//  updatedAt   DateTime @updatedAt
-//
-//  userId      String
-//  user        User     @relation("UserPasswords", fields: [userId], references: [id])
-//}
+model Password {
+  id          String   @id @default(uuid())
+
+  description String
+  site        String
+  email       String
+  password    String
+
+  createdAt   DateTime @default(now())
+
+
+  userId      String
+  user        User     @relation("UserPasswords", fields: [userId], references: [id])
+}
