@@ -16,7 +16,7 @@ const app = express();
 app.use(express.json()); // parse JSON bodies
 
 import cors, { CorsOptions } from "cors";
-import { CorsOptionsDelegate } from "cors";
+
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -24,13 +24,12 @@ const allowedOrigins = [
 ].filter(Boolean) as string[];
 
 const corsOptions: CorsOptions = {
-  origin: (
-    origin: string | undefined,
-    callback: (err: Error | null, allow?: boolean) => void
-  ): void => {
+  origin: (origin, callback) => {
+    console.log("CORS check, origin:", origin);
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.warn("Blocked by CORS:", origin);
       callback(new Error("Not allowed by CORS"));
     }
   },
