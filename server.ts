@@ -14,7 +14,9 @@ import bcrypt from "bcrypt";
 import path from 'path';
 const app = express();
 app.use(express.json()); // parse JSON bodies
+
 import cors, { CorsOptions } from "cors";
+import { CorsOptionsDelegate } from "cors";
 
 const allowedOrigins = [
   "http://localhost:5173",
@@ -22,7 +24,10 @@ const allowedOrigins = [
 ].filter(Boolean) as string[];
 
 const corsOptions: CorsOptions = {
-  origin: (origin: string | undefined, callback) => {
+  origin: (
+    origin: string | undefined,
+    callback: (err: Error | null, allow?: boolean) => void
+  ): void => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -226,5 +231,5 @@ app.post("/auth/refresh", async (req: Request, res: Response) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
