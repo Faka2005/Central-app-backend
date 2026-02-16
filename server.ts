@@ -2,7 +2,8 @@ import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 // @ts-ignore
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "./generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
+
 import userRoute from "./routes/users.routes";
 import passwordRoute from "./routes/passwords.routes";
 import reciterRoute from "./routes/reciter.routes";
@@ -19,7 +20,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 
 
 
-  
+
 app.use("/reciters", express.static("public/reciters"));
 
 

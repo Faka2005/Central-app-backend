@@ -2,7 +2,8 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../server";
 import crypto from "crypto";
 import "dotenv/config";
-import { Password } from "../generated/prisma/client";
+import { Password } from "@prisma/client";
+
 const router = Router();
 
 const algorithm = "aes-256-gcm";
