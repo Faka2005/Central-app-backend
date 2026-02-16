@@ -3,7 +3,6 @@ import express, { Request, Response, NextFunction } from "express";
 // @ts-ignore
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
-
 import userRoute from "./routes/users.routes";
 import passwordRoute from "./routes/passwords.routes";
 import reciterRoute from "./routes/reciter.routes";
