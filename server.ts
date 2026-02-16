@@ -110,7 +110,7 @@ app.post("/auth/login", async (req: Request, res: Response) => {
 
 
     res.status(200).json({
-      user: { id: user.id, email: user.email, username: user.username },
+      user: { id: user.id, email: user.email, username: user.username,role:user.role },
       token,
     });
   } catch (err) {

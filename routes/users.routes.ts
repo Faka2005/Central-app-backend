@@ -3,26 +3,18 @@ import { prisma } from '../server';
 
 const router = Router();
 
-// GET /users → liste tous les utilisateurs
-router.get('/', async (req, res) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.json(users);
-  } catch (err) {
-    
-    res.status(500).json({ error: 'DB error' });
-  }
-});
+
 
 
 // GET /users/:id → récupérer un utilisateur par id
-router.get('/:id', async (req, res) => {
+router.get('/me/:id', async (req, res) => {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: req.params.id },
+    const profile = await prisma.profil.findUnique({
+      where: { userId: req.params.id.toString() },
     });
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    res.json(user);
+    if (!profile) return res.status(404).json({ error: 'User not found' });
+
+    res.json(profile);
   } catch (err) {
     
     res.status(500).json({ error: 'DB error' });

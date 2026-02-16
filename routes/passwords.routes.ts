@@ -1,92 +1,175 @@
-import { Router } from 'express';
-import { prisma } from '../server';
-import express, { Request, Response } from "express";
-import bcrypt from "bcrypt";
-// @ts-ignore
-
-const app = express();
-app.use(express.json()); 
+import { Router, Request, Response } from "express";
+import { prisma } from "../server";
+import crypto from "crypto";
+import "dotenv/config";
 
 const router = Router();
 
+const algorithm = "aes-256-gcm";
+const key = Buffer.from(process.env.ENCRYPTION_KEY as string, "hex");
 
 /**
- *Ajouter un nouveau mot de passe à l'utilisateur
+ * 🔐 Encrypt
  */
+function encrypt(text: string) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv(algorithm, key, iv);
 
-router.post("/:id", async (req: Request, res: Response) => {
-  const id = req.params.id.toString(); // déjà string
-  const { site, email, password, description } = req.body;
+  const encrypted = Buffer.concat([
+    cipher.update(text, "utf8"),
+    cipher.final(),
+  ]);
 
-  // Vérifications
-  if (!id) return res.status(400).json({ message: "ID requis" });
-  if (!site || !email || !password || !description)
+  const authTag = cipher.getAuthTag();
+
+  return {
+    content: encrypted.toString("base64"),
+    iv: iv.toString("base64"),
+    tag: authTag.toString("base64"),
+  };
+}
+
+/**
+ * 🔓 Decrypt
+ */
+function decrypt(encrypted: any) {
+  const decipher = crypto.createDecipheriv(
+      algorithm,
+      key,
+      Buffer.from(encrypted.iv, "base64")
+  );
+
+  decipher.setAuthTag(Buffer.from(encrypted.tag, "base64"));
+
+  const decrypted = Buffer.concat([
+    decipher.update(Buffer.from(encrypted.content, "base64")),
+    decipher.final(),
+  ]);
+
+  return decrypted.toString("utf8");
+}
+
+/**
+ * CREATE
+ */
+router.post("/", async (req: Request, res: Response) => {
+  const { userId, site, email, password, description } = req.body;
+
+  if (!userId || !site || !email || !password)
     return res.status(400).json({ message: "Champs manquants" });
 
   try {
-    // Vérifier que l'utilisateur existe
-    const user = await prisma.user.findUnique({
-      where: { id },
-    });
-    if (!user) return res.status(404).json({ error: "User not found" });
+    const encryptedPassword = encrypt(password);
 
-    // Hash du mot de passe
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    // Créer le mot de passe lié à l'utilisateur
     const newPassword = await prisma.password.create({
       data: {
         site,
         email,
-        password: passwordHash, // <-- utiliser le hash
         description,
-        userId: user.id,
+        userId,
+        password: JSON.stringify(encryptedPassword), // stockage JSON
       },
     });
 
-    res.status(201).json(newPassword);
+    res.status(201).json({ message: "Mot de passe enregistré" });
   } catch (err) {
-    
-    res.status(500).json({ error: "DB error" });
+    res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
+/**
+ * READ ALL (décrypté pour frontend)
+ */
+router.get("/user/:userId", async (req: Request, res: Response) => {
+  const { userId } = req.params;
 
+  try {
+    const passwords = await prisma.password.findMany({
+      where: { userId:userId.toString()  },
+    });
+
+    const decryptedPasswords = passwords.map((p) => {
+      const parsed = JSON.parse(p.password);
+      return {
+        ...p,
+        password: decrypt(parsed), // décrypté ici
+      };
+    });
+
+    res.json(decryptedPasswords);
+  } catch (err) {
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+/**
+ * READ ONE (décrypté)
+ */
 router.get("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
   try {
-    const id = req.params.id.toString();
     const password = await prisma.password.findUnique({
-      where: { id },
+      where: { id:id.toString()  },
     });
-    if (!password) return res.status(404).json({ error: "Mot de passe introuvable" });
-    res.json(password);
+
+    if (!password)
+      return res.status(404).json({ message: "Introuvable" });
+
+    const parsed = JSON.parse(password.password);
+
+    res.json({
+      ...password,
+      password: decrypt(parsed),
+    });
   } catch (err) {
-    
-    res.status(500).json({ error: "DB error" });
+    res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
+/**
+ * UPDATE (re-chiffre si nouveau password)
+ */
+router.put("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { site, email, password, description } = req.body;
 
-router.delete("/:id", async (req: Request, res: Response) => {
   try {
+    let updateData: any = {
+      site,
+      email,
+      description,
+    };
 
+    if (password) {
+      updateData.password = JSON.stringify(encrypt(password));
+    }
+
+    const updated = await prisma.password.update({
+      where: { id:id.toString() },
+      data: updateData,
+    });
+
+    res.json({ message: "Mis à jour" });
   } catch (err) {
-    
-    res.status(500).json({ error: "DB error" });
+    res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
-
+/**
+ * DELETE
+ */
 router.delete("/:id", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
   try {
-    const id = req.params.id.toString();
-    const deletedPassword = await prisma.password.delete({
-      where: { id },
+    await prisma.password.delete({
+      where: { id:id.toString() },
     });
-    res.json({ message: "Mot de passe supprimé", deletedPassword });
+
+    res.json({ message: "Supprimé" });
   } catch (err) {
-    
-    res.status(500).json({ error: "DB error" });
+    res.status(500).json({ error: "Erreur serveur" });
   }
 });
 
