@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../server";
 import crypto from "crypto";
 import "dotenv/config";
-
+import { Password } from "../generated/prisma/client";
 const router = Router();
 
 const algorithm = "aes-256-gcm";
@@ -88,7 +88,7 @@ router.get("/user/:userId", async (req: Request, res: Response) => {
       where: { userId:userId.toString()  },
     });
 
-    const decryptedPasswords = passwords.map((p) => {
+    const decryptedPasswords = passwords.map((p:Password  ) => {
       const parsed = JSON.parse(p.password);
       return {
         ...p,
