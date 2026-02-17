@@ -18,26 +18,31 @@ app.use(express.json()); // parse JSON bodies
 import cors, { CorsOptions } from "cors";
 
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.FRONTEND_URL,
-].filter(Boolean) as string[];
+//const allowedOrigins = [
+//  "http://localhost:5173",
+//  process.env.FRONTEND_URL,
+//].filter(Boolean) as string[];
+//
+//const corsOptions: CorsOptions = {
+//  origin: (origin, callback) => {
+//    console.log("CORS check, origin:", origin);
+//    if (!origin || allowedOrigins.includes(origin)) {
+//      callback(null, true);
+//    } else {
+//      console.warn("Blocked by CORS:", origin);
+//      callback(new Error("Not allowed by CORS"));
+//    }
+//  },
+//  credentials: true,
+//};
 
-const corsOptions: CorsOptions = {
-  origin: (origin, callback) => {
-    console.log("CORS check, origin:", origin);
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn("Blocked by CORS:", origin);
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+//app.use(cors(corsOptions));
+
+app.use(cors({
+  origin: true,
   credentials: true,
-};
-
-app.use(cors(corsOptions));
-
+}));
+``
 
 
 
