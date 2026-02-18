@@ -82,6 +82,10 @@ model Friend {
   @@unique([userId, friendId]) // éviter les doublons
 }
 
+
+//////////////////////////////////////////////////
+// 🎙️ RECITER (Récitateur)
+//////////////////////////////////////////////////
 model Reciter {
   id        String   @id @default(uuid())
   name      String
@@ -89,8 +93,26 @@ model Reciter {
   basePath  String   // ex: /files/Yasser_Al_Dossary
   createdAt DateTime @default(now())
 
-
+  surahs    Surah[]
 }
+
+//////////////////////////////////////////////////
+// 📖 SURAH (Sourate)
+//////////////////////////////////////////////////
+model Surah {
+  id         String   @id @default(uuid())
+  number     Int      // 1 → 114
+  name       String
+  audioFile  String   // ex: 001.mp3
+  createdAt  DateTime @default(now())
+
+  reciterId  String
+  reciter    Reciter  @relation(fields: [reciterId], references: [id])
+
+  @@unique([number, reciterId]) // 1 sourate unique par récitateur
+}
+
+
 
 
 model Service {

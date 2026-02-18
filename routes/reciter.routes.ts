@@ -34,32 +34,32 @@ router.get("/", async (_req: Request, res: Response) => {
  * GET /reciters/:slug
  */
 // GET /reciter/:slug
-//router.get("/:slug", async (req: Request, res: Response) => {
-// 
-//  try {
-//    const slug =getString(req.params.slug);
-//
-//    const reciter = await prisma.reciter.findUnique({
-//      where: { slug },
-//      include: {
-//        surahs: {
-//          orderBy: { number: "asc" },
-//        },
-//      },
-//    });
-//
-//    if (!reciter) return res.status(404).json({ error: "Reciter not found" });
-//      
-//
-//    res.json({
-//      reciter,
-// 
-//    });
-//  } catch (err) {
-//    
-//    res.status(500).json({ error: "DB error" });
-//  }
-//});
+router.get("/:slug", async (req: Request, res: Response) => {
+ 
+  try {
+    const slug =getString(req.params.slug);
+
+    const reciter = await prisma.reciter.findUnique({
+      where: { slug },
+      include: {
+        surahs: {
+          orderBy: { number: "asc" },
+        },
+      },
+    });
+
+    if (!reciter) return res.status(404).json({ error: "Reciter not found" });
+      
+
+    res.json({
+      reciter,
+ 
+    });
+  } catch (err) {
+    
+    res.status(500).json({ error: "DB error" });
+  }
+});
 
 
 /**
