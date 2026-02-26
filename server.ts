@@ -7,6 +7,7 @@ import userRoute from "./routes/users.routes";
 import passwordRoute from "./routes/passwords.routes";
 import reciterRoute from "./routes/reciter.routes";
 import adminRoute  from "./routes/admin.routes";
+import mediaRoute from "./routes/media.routes";
 import { Secret } from "jsonwebtoken";
 import servicesRoute from "./routes/services.routes";
 var jwt = require("jsonwebtoken");
@@ -42,7 +43,7 @@ app.use(cors({
   origin: true,
   credentials: true,
 }));
-``
+
 
 
 
@@ -64,6 +65,7 @@ app.use("/users",adminRoute);
 app.use("/password", passwordRoute);
 app.use("/reciter", reciterRoute);
 app.use("/services", servicesRoute);
+app.use("/media", mediaRoute);
 app.use(
   "/test",
   express.static(path.resolve("coverage/lcov-report"))

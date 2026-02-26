@@ -53,28 +53,33 @@ function decrypt(encrypted: any) {
 /**
  * CREATE
  */
-router.post("/", async (req: Request, res: Response) => {
-  const { userId, site, email, password, description } = req.body;
+router.post("/:userId", async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const { site, email, password, description } = req.body;
 
-  if (!userId || !site || !email || !password)
+  if (!userId || !site || !email || !password) {
     return res.status(400).json({ message: "Champs manquants" });
+  }
 
   try {
-    const encryptedPassword = encrypt(password);
+const encryptedPassword = encrypt(password);
 
-    const newPassword = await prisma.password.create({
-      data: {
-        site,
-        email,
-        description,
-        userId,
-        password: JSON.stringify(encryptedPassword), // stockage JSON
-      },
+const newPassword = await prisma.password.create({
+  data: {
+    site,
+    email,
+    description,
+    userId: userId.toString(),
+    password: JSON.stringify(encryptedPassword), // ← stocke iv + content + tag
+  },
+});
+
+    res.status(201).json({
+      ...newPassword,
+      password, // renvoyer version décryptée au frontend
     });
-
-    res.status(201).json({ message: "Mot de passe enregistré" });
   } catch (err) {
-    res.status(500).json({ error: "Erreur serveur" });
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
@@ -86,47 +91,29 @@ router.get("/user/:userId", async (req: Request, res: Response) => {
 
   try {
     const passwords = await prisma.password.findMany({
-      where: { userId:userId.toString()  },
+      where: { userId: userId.toString() },
     });
 
-    const decryptedPasswords = passwords.map((p:Password  ) => {
-      const parsed = JSON.parse(p.password);
-      return {
-        ...p,
-        password: decrypt(parsed), // décrypté ici
-      };
-    });
+const decryptedPasswords = passwords.map((p) => {
+  try {
+    const parsed = JSON.parse(p.password); // parsed = { iv, content, tag }
+    return {
+      ...p,
+      password: decrypt(parsed),
+    };
+  } catch (error) {
+    console.error("Erreur decrypt :", error, p.password);
+    return p; // fallback pour ne pas planter la route
+  }
+});
 
     res.json(decryptedPasswords);
   } catch (err) {
-    res.status(500).json({ error: "Erreur serveur" });
+    console.error(err);
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
-/**
- * READ ONE (décrypté)
- */
-router.get("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  try {
-    const password = await prisma.password.findUnique({
-      where: { id:id.toString()  },
-    });
-
-    if (!password)
-      return res.status(404).json({ message: "Introuvable" });
-
-    const parsed = JSON.parse(password.password);
-
-    res.json({
-      ...password,
-      password: decrypt(parsed),
-    });
-  } catch (err) {
-    res.status(500).json({ error: "Erreur serveur" });
-  }
-});
 
 /**
  * UPDATE (re-chiffre si nouveau password)
@@ -136,24 +123,24 @@ router.put("/:id", async (req: Request, res: Response) => {
   const { site, email, password, description } = req.body;
 
   try {
-    let updateData: any = {
-      site,
-      email,
-      description,
-    };
+    const updateData: any = {};
 
-    if (password) {
+    if (site !== undefined) updateData.site = site;
+    if (email !== undefined) updateData.email = email;
+    if (description !== undefined) updateData.description = description;
+
+    if (password !== undefined) {
       updateData.password = JSON.stringify(encrypt(password));
     }
 
     const updated = await prisma.password.update({
-      where: { id:id.toString() },
+      where: { id: id.toString() },
       data: updateData,
     });
 
     res.json({ message: "Mis à jour" });
   } catch (err) {
-    res.status(500).json({ error: "Erreur serveur" });
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
@@ -165,12 +152,12 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
   try {
     await prisma.password.delete({
-      where: { id:id.toString() },
+      where: { id: id.toString() },
     });
 
     res.json({ message: "Supprimé" });
   } catch (err) {
-    res.status(500).json({ error: "Erreur serveur" });
+    res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
