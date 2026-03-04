@@ -1,7 +1,13 @@
 import { Router } from 'express';
 import { prisma } from '../server';
 
+
 const router = Router();
+
+const AuthAdminMiddleware=(req,res,next)=>{
+    next()
+}
+
 
 // GET /users → liste tous les utilisateurs
 router.get('/', async (req, res) => {

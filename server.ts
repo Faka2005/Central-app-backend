@@ -230,6 +230,9 @@ app.post("/auth/refresh", async (req: Request, res: Response) => {
 //});
 //app.post("/auth/forgot-password", async (req: Request, res: Response) => {});
 
+const AuthAdminMiddleware=(req: Request, res: Response, next: Function)=>{
+    next()
+}
 // ----------------------
 // Démarrage du serveur
 // ----------------------
