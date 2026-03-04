@@ -32,7 +32,7 @@ model Profil {
   firstname String
   lastname  String
   bio       String?
-  interests ProfilInterest[] // relation many-to-many
+  interests Interest[] // relation many-to-many
   niveau    String
   campus    String
   isTutor   Boolean          @default(false)
@@ -42,6 +42,12 @@ model Profil {
   user      User?            @relation("UserProfil", fields: [userId], references: [id])
 
   courses   TutorLesson[]    // Leçons proposées par ce profil (si tutor)
+}
+
+model Interest {
+  id       String            @id @default(uuid())
+  name     String            @unique
+  profils  Profil[]
 }
 
 model TutorLesson {
@@ -54,20 +60,9 @@ model TutorLesson {
   createdAt DateTime   @default(now())
 }
 
-model Interest {
-  id       String            @id @default(uuid())
-  name     String            @unique
-  profils  ProfilInterest[]
-}
 
-model ProfilInterest {
-  profilId   String
-  interestId String
-  profil     Profil   @relation(fields: [profilId], references: [id])
-  interest   Interest @relation(fields: [interestId], references: [id])
 
-  @@id([profilId, interestId])
-}
+
 
 model Friend {
   id        String   @id @default(uuid())

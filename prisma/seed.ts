@@ -1,5 +1,5 @@
 import {prisma} from '../server'
-import { Service } from '@prisma/client'
+
 
 async function main() {
   const services = [
