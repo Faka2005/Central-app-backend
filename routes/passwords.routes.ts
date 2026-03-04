@@ -2,7 +2,7 @@ import { Router, Request, Response } from "express";
 import { prisma } from "../server";
 import crypto from "crypto";
 import "dotenv/config";
-
+import { AuthUser } from "../middleware/AuthUserMiddleware";
 
 const router = Router();
 
@@ -53,7 +53,7 @@ function decrypt(encrypted: any) {
 /**
  * CREATE
  */
-router.post("/:userId", async (req: Request, res: Response) => {
+router.post("/:userId",AuthUser, async (req: Request, res: Response) => {
   const { userId } = req.params;
   const { site, email, password, description } = req.body;
 
@@ -86,7 +86,7 @@ const newPassword = await prisma.password.create({
 /**
  * READ ALL (décrypté pour frontend)
  */
-router.get("/user/:userId", async (req: Request, res: Response) => {
+router.get("/user/:userId",AuthUser, async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   try {
@@ -118,7 +118,7 @@ const decryptedPasswords = passwords.map((p: any) => {
 /**
  * UPDATE (re-chiffre si nouveau password)
  */
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id",AuthUser, async (req: Request, res: Response) => {
   const { id } = req.params;
   const { site, email, password, description } = req.body;
 
@@ -147,7 +147,7 @@ router.put("/:id", async (req: Request, res: Response) => {
 /**
  * DELETE
  */
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id",AuthUser, async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {

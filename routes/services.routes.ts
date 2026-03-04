@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../server';
 import express, { Request, Response, NextFunction } from "express";
+import { AuthUserOrAdmin } from '../middleware/AuthUserOrAdminMiddleware';
 // @ts-ignore
 
 const app = express();
@@ -12,7 +13,7 @@ const router = Router();
  * GET /service
  * Récupérer tous les services
  */
-router.get("/", async (req: Request, res: Response) => {
+router.get("/",AuthUserOrAdmin, async (req: Request, res: Response) => {
   try {
     const services = await prisma.service.findMany();
     res.json(services);
@@ -26,7 +27,7 @@ router.get("/", async (req: Request, res: Response) => {
  * GET /service/:id
  * Récupérer un service par ID
  */
-router.get("/:id", async (req: Request, res: Response) => {
+router.get("/:id",AuthUserOrAdmin, async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id.toString(), 10);
     if (isNaN(id)) return res.status(400).json({ error: "ID invalide" });
@@ -48,7 +49,7 @@ router.get("/:id", async (req: Request, res: Response) => {
  * POST /service
  * Créer un nouveau service
  */
-router.post("/", async (req: Request, res: Response) => {
+router.post("/",AuthUserOrAdmin, async (req: Request, res: Response) => {
   try {
     const { name, description, link, etat } = req.body;
 
@@ -83,7 +84,7 @@ router.post("/", async (req: Request, res: Response) => {
  * PUT /services/:id
  * Mettre à jour un service
  */
-router.put("/:id", async (req: Request, res: Response) => {
+router.put("/:id",AuthUserOrAdmin, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
 
@@ -147,7 +148,7 @@ router.put("/:id", async (req: Request, res: Response) => {
  * DELETE /service/:id
  * Supprimer un service
  */
-router.delete("/:id", async (req: Request, res: Response) => {
+router.delete("/:id",AuthUserOrAdmin, async (req: Request, res: Response) => {
   try {
     const id = parseInt(req.params.id.toString(), 10);
     if (isNaN(id)) return res.status(400).json({ error: "ID invalide" });

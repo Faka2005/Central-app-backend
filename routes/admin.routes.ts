@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import { prisma } from '../server';
+import { AuthAdmin } from '../middleware/AuthAdminMiddleware';
+import express, { Request, Response } from "express";
+import { AuthUserOrAdmin } from '../middleware/AuthUserOrAdminMiddleware';
 
 
 const router = Router();
 
-const AuthAdminMiddleware=(req,res,next)=>{
-    next()
-}
 
 
 // GET /users → liste tous les utilisateurs
-router.get('/', async (req, res) => {
+router.get('/',AuthAdmin, async (req:Request, res:Response) => {
   try {
     const users = await prisma.user.findMany();
     res.json(users);
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id',AuthAdmin, async (req:Request, res:Response) => {
   try {
     const { id } = req.params;
     const { username, email } = req.body;
@@ -32,7 +32,7 @@ router.put('/:id', async (req, res) => {
 
     // Vérifier que l'utilisateur existe
     const existingUser = await prisma.user.findUnique({
-      where: { id }
+      where: { id:id.toString() }
     });
 
     if (!existingUser) {
@@ -41,7 +41,7 @@ router.put('/:id', async (req, res) => {
 
     // Mise à jour
     const updatedUser = await prisma.user.update({
-      where: { id },
+      where: { id :id.toString()},
       data: {
         username,
         email
@@ -57,7 +57,7 @@ router.put('/:id', async (req, res) => {
 
 
 //Change le role
-router.patch('/:id/role', async (req, res) => {
+router.patch('/:id/role',AuthAdmin, async (req:Request, res:Response) => {
   try {
     const id = String(req.params.id)
     const { role } = req.body
@@ -85,7 +85,7 @@ router.patch('/:id/role', async (req, res) => {
 
 
 // DELETE /users/:id → supprimer un utilisateur
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',AuthUserOrAdmin, async (req:Request, res:Response) => {
   try {
     const user = await prisma.user.delete({
       where: { id: req.params.id.toString() },

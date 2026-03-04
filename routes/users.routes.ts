@@ -1,10 +1,11 @@
 import { Router } from "express";
 import { prisma } from "../server";
-
+import { AuthUser } from "../middleware/AuthUserMiddleware";
+import { Request,Response } from "express";
 const router = Router();
 
 // GET /users/:id → récupérer un utilisateur par id
-router.get("/me/:id", async (req, res) => {
+router.get("/me/:id",AuthUser, async (req:Request, res:Response) => {
   try {
     const profile = await prisma.profil.findUnique({
       where: { userId: req.params.id.toString() },
@@ -18,7 +19,7 @@ router.get("/me/:id", async (req, res) => {
 });
 
 //PUT /users/:id -> mettre à jour un utilisateur
-router.put("/me/:id", async (req, res) => {
+router.put("/me/:id", AuthUser, async (req:Request, res:Response) => {
   try {
     const { id } = req.params;
     if (!id) return res.status(400).json({ error: "ID is required" });

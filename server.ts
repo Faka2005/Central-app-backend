@@ -134,7 +134,7 @@ app.post("/auth/login", async (req: Request, res: Response) => {
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) return res.status(401).json({ error: "Invalid password" });
 
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
+    const token = jwt.sign({ id: user.id, role:user.role }, JWT_SECRET, {
       expiresIn: JWT_EXPIRES_IN,
     });
 
@@ -230,9 +230,7 @@ app.post("/auth/refresh", async (req: Request, res: Response) => {
 //});
 //app.post("/auth/forgot-password", async (req: Request, res: Response) => {});
 
-const AuthAdminMiddleware=(req: Request, res: Response, next: Function)=>{
-    next()
-}
+
 // ----------------------
 // Démarrage du serveur
 // ----------------------
