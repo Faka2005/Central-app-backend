@@ -3,6 +3,7 @@ import { prisma } from '../server';
 import { AuthAdmin } from '../middleware/AuthAdminMiddleware';
 import express, { Request, Response } from "express";
 import { AuthUserOrAdmin } from '../middleware/AuthUserOrAdminMiddleware';
+import { AuthUser } from '../middleware/AuthUserMiddleware';
 
 
 const router = Router();
@@ -20,7 +21,7 @@ router.get('/',AuthAdmin, async (req:Request, res:Response) => {
   }
 });
 
-router.put('/:id',AuthAdmin, async (req:Request, res:Response) => {
+router.put('/:id',AuthUser, async (req:Request, res:Response) => {
   try {
     const { id } = req.params;
     const { username, email } = req.body;

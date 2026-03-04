@@ -1,54 +1,14 @@
 import { Router, Request, Response } from "express";
 import { prisma } from "../server";
-import crypto from "crypto";
+import { encrypt } from "../utils/Encrypt";
+import { decrypt } from "../utils/Decrypt";
 import "dotenv/config";
 import { AuthUser } from "../middleware/AuthUserMiddleware";
 
 const router = Router();
 
-const algorithm = "aes-256-gcm";
-const key = Buffer.from(process.env.ENCRYPTION_KEY as string, "hex");
 
-/**
- * 🔐 Encrypt
- */
-function encrypt(text: string) {
-  const iv = crypto.randomBytes(12);
-  const cipher = crypto.createCipheriv(algorithm, key, iv);
 
-  const encrypted = Buffer.concat([
-    cipher.update(text, "utf8"),
-    cipher.final(),
-  ]);
-
-  const authTag = cipher.getAuthTag();
-
-  return {
-    content: encrypted.toString("base64"),
-    iv: iv.toString("base64"),
-    tag: authTag.toString("base64"),
-  };
-}
-
-/**
- * 🔓 Decrypt
- */
-function decrypt(encrypted: any) {
-  const decipher = crypto.createDecipheriv(
-      algorithm,
-      key,
-      Buffer.from(encrypted.iv, "base64")
-  );
-
-  decipher.setAuthTag(Buffer.from(encrypted.tag, "base64"));
-
-  const decrypted = Buffer.concat([
-    decipher.update(Buffer.from(encrypted.content, "base64")),
-    decipher.final(),
-  ]);
-
-  return decrypted.toString("utf8");
-}
 
 /**
  * CREATE
