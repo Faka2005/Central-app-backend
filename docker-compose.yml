@@ -6,11 +6,8 @@ services:
     container_name: backend
     ports:
       - "3000:3000"
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/app
-      JWT_SECRET: supersecret
-    depends_on:
-      - db
+    env_file:
+    - .env
     restart: always
 
   db:
@@ -20,8 +17,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: app
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
