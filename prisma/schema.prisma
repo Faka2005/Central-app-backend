@@ -20,11 +20,11 @@ model User {
   role      String   @default("user")
   createdAt DateTime @default(now())
 
-  // côté "inverse" de la relation one-to-one
+  
   profil    Profil?  @relation("UserProfil")
-    sentFriendRequests     Friend[] @relation("UserFriends")    // user qui envoie
+  sentFriendRequests     Friend[] @relation("UserFriends")    // user qui envoie
   receivedFriendRequests Friend[] @relation("UserFriendOf")  // user qui reçoit
-  passwords Password[] @relation("UserPasswords")
+                     passwords Password[] @relation("UserPasswords")
 }
 
 model Profil {
@@ -32,7 +32,7 @@ model Profil {
   firstname String
   lastname  String
   bio       String?
-  interests Interest[] // relation many-to-many
+  interests Interest[] 
   niveau    String
   campus    String
   isTutor   Boolean          @default(false)
@@ -41,7 +41,7 @@ model Profil {
   userId    String?          @unique
   user      User?            @relation("UserProfil", fields: [userId], references: [id])
 
-  courses   TutorLesson[]    // Leçons proposées par ce profil (si tutor)
+  courses   TutorLesson[]    
 }
 
 model Interest {
@@ -54,7 +54,7 @@ model TutorLesson {
   id        String    @id @default(uuid())
   title     String
   content   String
-  niveau    String     // Niveau de la leçon
+  niveau    String     
   tutorId   String
   tutor     Profil     @relation(fields: [tutorId], references: [id])
   createdAt DateTime   @default(now())
@@ -77,6 +77,13 @@ model Friend {
   @@unique([userId, friendId]) // éviter les doublons
 }
 
+model Messsage {
+  id    String
+  senderId  String
+  receiverId String
+  content String
+  
+}
 
 //////////////////////////////////////////////////
 // 🎙️ RECITER (Récitateur)
@@ -135,3 +142,5 @@ model Password {
   userId      String
   user        User     @relation("UserPasswords", fields: [userId], references: [id])
 }
+
+

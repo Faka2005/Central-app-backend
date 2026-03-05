@@ -1,4 +1,4 @@
-import { verifyToken, AuthRequest} from "../VerifyToken"
+import { verifyToken, AuthRequest} from "../utils/VerifyToken"
 import { Request, Response, NextFunction } from "express";
 export const AuthUserOrAdmin = [
   verifyToken,

@@ -9,7 +9,13 @@
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "dev:up": "podman compose up",
+    "dev:down": "podman compose down",
+    "dev:rebuild": "podman compose down -v && podman compose up --build",
+    "dev:logs": "podman compose logs -f",
+    "dev:ps": "podman ps"
+   
   },
   "keywords": [],
   "author": "",

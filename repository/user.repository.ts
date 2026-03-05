@@ -23,7 +23,7 @@ export const userRepository = {
     });
   },
 
-  updateRole: (id: string, role: "user" | "admin") => {
+  updateRole: (id: string, role: string) => {
     return prisma.user.update({
       where: { id },
       data: { role },
