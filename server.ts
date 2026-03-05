@@ -8,6 +8,7 @@ import passwordRoute from "./routes/passwords.routes";
 import reciterRoute from "./routes/reciter.routes";
 import adminRoute  from "./routes/admin.routes";
 import mediaRoute from "./routes/media.routes";
+import authRoute from "./routes/auth.routes" ;
 import { Secret } from "jsonwebtoken";
 import servicesRoute from "./routes/services.routes";
 var jwt = require("jsonwebtoken");
@@ -60,6 +61,8 @@ export const prisma = new PrismaClient({ adapter });
 
 const JWT_SECRET: Secret = process.env.JWT_SECRET || "devsecret";
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
+
+app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/users",adminRoute);
 app.use("/password", passwordRoute);
@@ -76,78 +79,78 @@ app.get('/',(req:Request,res:Response)=>{
 })
 
 
-app.post("/auth/register", async (req: Request, res: Response) => {
-  try {
-    const { email, password, username } = req.body;
-    if (!email || !password || !username) {
-      return res
-        .status(400)
-        .json({ error: "Email, username and password are required" });
-    }
-
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing)
-      return res.status(409).json({ error: "Email already registered" });
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Créer l'utilisateur
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        username,
-      },
-    });
-
-    // Créer un profil vide lié à l'utilisateur
-    const profile = await prisma.profil.create({
-      data: {
-        userId: user.id, // <-- lier le profil à l'utilisateur
-        firstname: "",
-        lastname: "",
-        bio: "",
-        niveau: "",
-        campus: "",
-        isTutor: false,
-      },
-    });
-    res.status(201).json({
-      user: { id: user.id, email: user.email, username: user.username },
-      
-    });
-  } catch (err: any) {
-    
-    res.status(500).json({ error: "DB error" });
-  }
-});
-
-app.post("/auth/login", async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-    if (!email || !password)
-      return res.status(400).json({ error: "Email and password are required" });
-
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return res.status(404).json({ error: "User not found" });
-
-    const isValid = await bcrypt.compare(password, user.password);
-    if (!isValid) return res.status(401).json({ error: "Invalid password" });
-
-    const token = jwt.sign({ id: user.id, role:user.role }, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
-    });
-
-
-    res.status(200).json({
-      user: { id: user.id, email: user.email, username: user.username,role:user.role },
-      token,
-    });
-  } catch (err) {
-    
-    res.status(500).json({ error: "DB error" });
-  }
-});
+//app.post("/auth/register", async (req: Request, res: Response) => {
+//  try {
+//    const { email, password, username } = req.body;
+//    if (!email || !password || !username) {
+//      return res
+//        .status(400)
+//        .json({ error: "Email, username and password are required" });
+//    }
+//
+//    const existing = await prisma.user.findUnique({ where: { email } });
+//    if (existing)
+//      return res.status(409).json({ error: "Email already registered" });
+//
+//    const hashedPassword = await bcrypt.hash(password, 10);
+//
+//    // Créer l'utilisateur
+//    const user = await prisma.user.create({
+//      data: {
+//        email,
+//        password: hashedPassword,
+//        username,
+//      },
+//    });
+//
+//    // Créer un profil vide lié à l'utilisateur
+//    const profile = await prisma.profil.create({
+//      data: {
+//        userId: user.id, // <-- lier le profil à l'utilisateur
+//        firstname: "",
+//        lastname: "",
+//        bio: "",
+//        niveau: "",
+//        campus: "",
+//        isTutor: false,
+//      },
+//    });
+//    res.status(201).json({
+//      user: { id: user.id, email: user.email, username: user.username },
+//      
+//    });
+//  } catch (err: any) {
+//    
+//    res.status(500).json({ error: "DB error" });
+//  }
+//});
+//
+//app.post("/auth/login", async (req: Request, res: Response) => {
+//  try {
+//    const { email, password } = req.body;
+//    if (!email || !password)
+//      return res.status(400).json({ error: "Email and password are required" });
+//
+//    const user = await prisma.user.findUnique({ where: { email } });
+//    if (!user) return res.status(404).json({ error: "User not found" });
+//
+//    const isValid = await bcrypt.compare(password, user.password);
+//    if (!isValid) return res.status(401).json({ error: "Invalid password" });
+//
+//    const token = jwt.sign({ id: user.id, role:user.role }, JWT_SECRET, {
+//      expiresIn: JWT_EXPIRES_IN,
+//    });
+//
+//
+//    res.status(200).json({
+//      user: { id: user.id, email: user.email, username: user.username,role:user.role },
+//      token,
+//    });
+//  } catch (err) {
+//    
+//    res.status(500).json({ error: "DB error" });
+//  }
+//});
 
 app.delete("/auth/me/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -185,50 +188,9 @@ app.delete("/auth/me/:id", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/auth/refresh", async (req: Request, res: Response) => {
-  const refreshToken = req.body.refreshToken;
-
-  if (!refreshToken) {
-    return res.status(401).json({ error: "Refresh token missing" });
-  }
-
-  const payload = jwt.verify(refreshToken, JWT_SECRET) as any;
-
-  const user = await prisma.user.findUnique({
-    where: { id: payload.id },
-  });
-
-  if (!user) {
-    return res.status(401).json({ error: "Invalid refresh token" });
-  }
-
-  const newToken = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES_IN,
-  });
-
-  res.json({ token: newToken });
-});
 
 
 
-//app.post("/auth/reset-password/:id", async (req: Request, res: Response) => {
-//  const id =req.params;
-//  const {newpassword} =req.body;
-//
-//     if (!id || !newpassword)
-//      return res.status(400).json({ error: "Email and password are required" });
-//       if (Array.isArray(id)) {
-//    return res.status(400).json({ error: "Invalid user id" });
-//  }
-//    const user = await prisma.user.findUnique({ where: { id } });
-//    if (!user) return res.status(404).json({ error: "User not found" });
-//  try {
-//    
-//  } catch (error) {
-//    
-//  }
-//});
-//app.post("/auth/forgot-password", async (req: Request, res: Response) => {});
 
 
 // ----------------------

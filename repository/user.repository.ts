@@ -17,7 +17,7 @@ export const userRepository = {
     });
   },
 
-  deleteOne: (id: string) => {
+  delete: (id: string) => {
     return prisma.user.delete({
       where: { id },
     });

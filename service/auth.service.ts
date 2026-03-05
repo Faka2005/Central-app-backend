@@ -4,6 +4,7 @@ import { userRepository } from "../repository/user.repository";
 import { AppError } from "../utils/AppError";
 import { ComparePassword } from "../utils/ComparePassword";
 import { HashPassword } from "../utils/HashPassword";
+import { generateToken } from "../utils/GeneratedToken";
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
@@ -48,14 +49,25 @@ export const loginService = async (data: any) => {
     throw new AppError("Invalid credentials", 401);
   }
 
-  const token = jwt.sign(
-    { userId: user.id, role: user.role },
-    JWT_SECRET,
-    { expiresIn: "15m" }
-  );
+  const token = generateToken({ userId: user.id, role: "user" });
 
   return {
     message: "Login success",
     token,
   };
 };
+
+export const deleteUserService = async (id: string) => {
+  const user = await userRepository.findById(id);
+
+  if (!user) {
+    throw new AppError("User not found", 404);
+  }
+
+  await userRepository.delete(id);
+
+  return {
+    message: "User deleted",
+  };
+};
+
