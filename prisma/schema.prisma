@@ -77,13 +77,13 @@ model Friend {
   @@unique([userId, friendId]) // éviter les doublons
 }
 
-model Messsage {
-  id    String
-  senderId  String
-  receiverId String
-  content String
-  
-}
+//model Messsage {
+//  id    String
+//  senderId  String
+//  receiverId String
+//  content String
+//  
+//}
 
 //////////////////////////////////////////////////
 // 🎙️ RECITER (Récitateur)

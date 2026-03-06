@@ -1,133 +1,4 @@
 
-
-# 🧱 SCHÉMA LOGIQUE (référence)
-
-Relations clés :
-
-* User → Password (1-N)
-* User → CSVFile (1-N)
-* User → Media (1-N)
-* User → LessonProgress (1-N)
-* Lesson → LessonProgress (1-N)
-
-IDs : **UUID partout** (bonne pratique moderne)
-
----
-
-# 🐘 VERSION SQL (PostgreSQL)
-
-## 👤 User
-
-```sql
-CREATE TABLE users (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email TEXT NOT NULL UNIQUE,
-  username TEXT UNIQUE,
-  password TEXT NOT NULL,
-  role TEXT NOT NULL DEFAULT 'user',
-  created_at TIMESTAMP DEFAULT now()
-);
-```
-
----
-
-## 🔐 Password
-
-```sql
-CREATE TABLE passwords (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL,
-  label TEXT NOT NULL,
-  value TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT now(),
-
-  CONSTRAINT fk_password_user
-    FOREIGN KEY (user_id)
-    REFERENCES users(id)
-    ON DELETE CASCADE
-);
-```
-
----
-
-## 📊 CSVFile
-
-```sql
-CREATE TABLE csv_files (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL,
-  filename TEXT NOT NULL,
-  data TEXT NOT NULL,
-  uploaded_at TIMESTAMP DEFAULT now(),
-
-  CONSTRAINT fk_csv_user
-    FOREIGN KEY (user_id)
-    REFERENCES users(id)
-    ON DELETE CASCADE
-);
-```
-
----
-
-## 🖼️🎥 Media
-
-```sql
-CREATE TABLE media (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL,
-  filename TEXT NOT NULL,
-  type TEXT NOT NULL, -- image / video
-  url TEXT NOT NULL,
-  uploaded_at TIMESTAMP DEFAULT now(),
-
-  CONSTRAINT fk_media_user
-    FOREIGN KEY (user_id)
-    REFERENCES users(id)
-    ON DELETE CASCADE
-);
-```
-
----
-
-## 📚 Lesson
-
-```sql
-CREATE TABLE lessons (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  title TEXT NOT NULL,
-  content TEXT NOT NULL,
-  status TEXT DEFAULT 'published',
-  created_at TIMESTAMP DEFAULT now()
-);
-```
-
----
-
-## 📈 LessonProgress
-
-```sql
-CREATE TABLE lesson_progress (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL,
-  lesson_id UUID NOT NULL,
-  progress INTEGER DEFAULT 0,
-  completed BOOLEAN DEFAULT false,
-  updated_at TIMESTAMP DEFAULT now(),
-
-  CONSTRAINT fk_lp_user
-    FOREIGN KEY (user_id)
-    REFERENCES users(id)
-    ON DELETE CASCADE,
-
-  CONSTRAINT fk_lp_lesson
-    FOREIGN KEY (lesson_id)
-    REFERENCES lessons(id)
-    ON DELETE CASCADE,
-
-  CONSTRAINT unique_user_lesson UNIQUE (user_id, lesson_id)
-);
-```
-
 ---
 
 # 🧬 VERSION PRISMA (schema.prisma)
@@ -142,92 +13,57 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
-
 model User {
-  id        String    @id @default(uuid())
-  email     String    @unique
-  username  String?   @unique
+  id        String   @id @default(uuid())
+  username  String
+  email     String   @unique
   password  String
-  role      String    @default("user")
-  createdAt DateTime  @default(now())
-
-  passwords Password[]
-  csvFiles  CSVFile[]
-  media     Media[]
-  progress  LessonProgress[]
-}
-
-model Password {
-  id        String   @id @default(uuid())
-  label     String
-  value     String
+  role      String   @default("user")
   createdAt DateTime @default(now())
 
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  profil    Profil?  @relation("UserProfil")
+  sentFriendRequests     Friend[] @relation("UserFriends")    // user qui envoie
+  receivedFriendRequests Friend[] @relation("UserFriendOf")  // user qui reçoit
+                     passwords Password[] @relation("UserPasswords")
 }
 
-model CSVFile {
-  id         String   @id @default(uuid())
-  filename   String
-  data       String
-  uploadedAt DateTime @default(now())
+model Profil {
+  id        String           @id @default(uuid())
+  firstname String
+  lastname  String
+  bio       String?
+  interests Interest[] 
+  niveau    String
+  campus    String
+  isTutor   Boolean          @default(false)
 
-  userId String
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // côté "définissant" la relation (clé étrangère)
+  userId    String?          @unique
+  user      User?            @relation("UserProfil", fields: [userId], references: [id])
+
+  courses   TutorLesson[]    
 }
-
-model Media {
-  id         String   @id @default(uuid())
-  filename   String
-  type       String
-  url        String
-  uploadedAt DateTime @default(now())
-
-  userId String
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model Lesson {
-  id        String   @id @default(uuid())
-  title     String
-  content   String
-  status    String   @default("published")
-  createdAt DateTime @default(now())
-
-  progress LessonProgress[]
-}
-
-model LessonProgress {
-  id        String   @id @default(uuid())
-  progress  Int      @default(0)
-  completed Boolean  @default(false)
-  updatedAt DateTime @default(now())
-
-  userId   String
-  lessonId String
-
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, lessonId])
-}
-
 
 model Interest {
   id       String            @id @default(uuid())
   name     String            @unique
-  profils  ProfilInterest[]
+  profils  Profil[]
 }
 
-model ProfilInterest {
-  profilId   String
-  interestId String
-  profil     Profil   @relation(fields: [profilId], references: [id])
-  interest   Interest @relation(fields: [interestId], references: [id])
-
-  @@id([profilId, interestId])
+model TutorLesson {
+  id        String    @id @default(uuid())
+  title     String
+  content   String
+  niveau    String     
+  tutorId   String
+  tutor     Profil     @relation(fields: [tutorId], references: [id])
+  createdAt DateTime   @default(now())
 }
+
+
+
+
 
 model Friend {
   id        String   @id @default(uuid())
@@ -242,6 +78,17 @@ model Friend {
   @@unique([userId, friendId]) // éviter les doublons
 }
 
+model Messsage {
+  id    String
+  senderId  String
+  receiverId String
+  content String
+  
+}
+
+//////////////////////////////////////////////////
+// 🎙️ RECITER (Récitateur)
+//////////////////////////////////////////////////
 model Reciter {
   id        String   @id @default(uuid())
   name      String
@@ -251,6 +98,24 @@ model Reciter {
 
   surahs    Surah[]
 }
+
+//////////////////////////////////////////////////
+// 📖 SURAH (Sourate)
+//////////////////////////////////////////////////
+model Surah {
+  id         String   @id @default(uuid())
+  number     Int      // 1 → 114
+  name       String
+  audioFile  String   // ex: 001.mp3
+  createdAt  DateTime @default(now())
+
+  reciterId  String
+  reciter    Reciter  @relation(fields: [reciterId], references: [id])
+
+  @@unique([number, reciterId]) // 1 sourate unique par récitateur
+}
+
+
 
 
 model Service {
@@ -263,31 +128,21 @@ model Service {
   updatedAt   DateTime @updatedAt
 }
 
+
+model Password {
+  id          String   @id @default(uuid())
+
+  description String
+  site        String
+  email       String
+  password    String
+
+  createdAt   DateTime @default(now())
+
+
+  userId      String
+  user        User     @relation("UserPasswords", fields: [userId], references: [id])
+}
+
 ```
-
----
-
-# ✅ Correspondance SQL ↔ Prisma
-
-| SQL             | Prisma                  |
-| --------------- | ----------------------- |
-| users           | User                    |
-| passwords       | Password                |
-| csv_files       | CSVFile                 |
-| media           | Media                   |
-| lessons         | Lesson                  |
-| lesson_progress | LessonProgress          |
-| UUID            | String @default(uuid()) |
-| FOREIGN KEY     | @relation               |
-
----
-
-
-
-## 👉 Prochaine étape possible
-
-Dis-moi ce que tu veux ensuite :
-
-* 📦 Docker + déploiement
-* 🧪 jeux de données de test
 

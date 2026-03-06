@@ -27,7 +27,9 @@ export const serviceRepository = {
       data: { etat:etat },
     });
   },
-
+  createService :(data:any)=>{
+    return prisma.service.create({data})
+  },
 
   updateService: (
     id: number,
