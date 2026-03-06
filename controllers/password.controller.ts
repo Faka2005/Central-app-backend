@@ -1,12 +1,12 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { passwordService } from "../service/password.service";
 import { password } from "../schema";
 import { Prisma } from "@prisma/client";
-
+import { AppError } from "../utils/AppError";
 export const passwordController = {
 
   // CREATE
-  create: async (req: Request, res: Response) => {
+  create: async (req: Request, res: Response,next:NextFunction) => {
     const { userId } = req.params;
 
     const parsed = password.safeParse(req.body);
@@ -24,12 +24,12 @@ export const passwordController = {
 
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Erreur serveur" });
+      next(err instanceof AppError ? err : new AppError("Erreur serveur"));
     }
   },
 
   // READ
-  getAllForUser: async (req: Request, res: Response) => {
+  getAllForUser: async (req: Request, res: Response,next:NextFunction) => {
     const { userId } = req.params;
 
     try {
@@ -39,12 +39,13 @@ export const passwordController = {
 
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Erreur serveur" });
+      next(err instanceof AppError ? err : new AppError("Erreur serveur"));
+
     }
   },
 
   // UPDATE
-  update: async (req: Request, res: Response) => {
+  update: async (req: Request, res: Response,next:NextFunction) => {
     const { id } = req.params;
 
     const parsed = password.partial().safeParse(req.body);
@@ -62,12 +63,12 @@ export const passwordController = {
 
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Erreur serveur" });
+      next(err instanceof AppError ? err : new AppError("Erreur serveur"));
     }
   },
 
   // DELETE
-  delete: async (req: Request, res: Response) => {
+  delete: async (req: Request, res: Response,next:NextFunction) => {
     const { id } = req.params;
 
     try {
@@ -79,7 +80,7 @@ export const passwordController = {
 
     } catch (err) {
       console.error(err);
-      res.status(500).json({ message: "Erreur serveur" });
+      next(err instanceof AppError ? err : new AppError("Erreur serveur"));
     }
   },
 };

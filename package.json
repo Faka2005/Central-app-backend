@@ -9,13 +9,8 @@
     "build": "tsc",
     "test": "jest",
     "test:watch": "jest --watch",
-    "seed": "ts-node prisma/seed.ts",
-    "dev:up": "podman compose up",
-    "dev:down": "podman compose down",
-    "dev:rebuild": "podman compose down -v && podman compose up --build",
-    "dev:logs": "podman compose logs -f",
-    "dev:ps": "podman ps"
-   
+    "test:coverage": "jest --coverage",
+    "seed": "ts-node prisma/seed.ts"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +20,7 @@
     "@prisma/adapter-pg": "^7.3.0",
     "@prisma/client": "6.19.2",
     "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
@@ -34,6 +30,7 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",

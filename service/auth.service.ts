@@ -52,6 +52,7 @@ export const loginService = async (data: any) => {
   const token = generateToken({ userId: user.id, role: "user" });
 
   return {
+    user,
     message: "Login success",
     token,
   };
