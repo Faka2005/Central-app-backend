@@ -11,7 +11,7 @@ import adminRoute  from "./routes/admin.routes";
 import mediaRoute from "./routes/media.routes";
 import authRoute from "./routes/auth.routes" ;
 import servicesRoute from "./routes/services.routes";
-
+import systemRoutes from "./routes/system.routes";
 import path from 'path';
 const app = express();
 app.use(express.json()); 
@@ -74,9 +74,7 @@ app.use(
   express.static(path.resolve("coverage/lcov-report"))
 );
 
-app.get('/',(req:Request,res:Response)=>{
-  res.send('Bonjour');
-})
+app.use("/", systemRoutes);
 
 
 app.use(errorHandlerMiddleware)
