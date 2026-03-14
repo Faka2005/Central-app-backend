@@ -41,7 +41,6 @@ const service = z.object({
  * MESSAGE
  */
 const message = z.object({
-  senderId: z.string(),
   receiverId: z.string(),
   content: z.string().min(1, "Message vide"),
 });
