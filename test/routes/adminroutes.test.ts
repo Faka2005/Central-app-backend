@@ -1,10 +1,10 @@
 import request from 'supertest';
 import express from 'express';
-import adminRouter from '../routes/admin.routes'; // Adjust path if necessary
-import { prisma } from '../server';
+import adminRouter from '../../routes/admin.routes'; // Adjust path if necessary
+import { prisma } from '../../server';
 
 // Mock the prisma client
-jest.mock('../server', () => ({
+jest.mock('../../server', () => ({
     prisma: {
         user: {
             findMany: jest.fn(),

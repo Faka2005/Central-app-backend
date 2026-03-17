@@ -7,7 +7,7 @@ export const passwordController = {
 
   // CREATE
   create: async (req: Request, res: Response,next:NextFunction) => {
-    const { userId } = req.params;
+    const userId = (req as any).user?.id;
 
     const parsed = password.safeParse(req.body);
 
@@ -30,7 +30,8 @@ export const passwordController = {
 
   // READ
   getAllForUser: async (req: Request, res: Response,next:NextFunction) => {
-    const { userId } = req.params;
+    const userId = (req as any).user?.id;
+
 
     try {
       const passwords = await passwordService.getPasswordsForUser(userId.toString());

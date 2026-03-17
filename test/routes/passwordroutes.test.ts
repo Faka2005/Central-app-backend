@@ -1,14 +1,14 @@
 import request from "supertest";
 import express from "express";
-import passwordRoute from "../routes/passwords.routes";
-import { prisma } from "../server";
+import passwordRoute from "../../routes/passwords.routes";
+import { prisma } from "../../server";
 
 // 🔐 Clé obligatoire pour l'encryption
 process.env.ENCRYPTION_KEY =
   "1234567890123456789012345678901234567890123456789012345678901234";
 
 // ---- MOCK PRISMA ----
-jest.mock("../server", () => ({
+jest.mock("../../server", () => ({
   prisma: {
     password: {
       create: jest.fn(),

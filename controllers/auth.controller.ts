@@ -51,8 +51,7 @@ export const login = async (req: Request, res: Response,next:NextFunction) => {
 };
 
 export const deleteUser = async (req: Request, res: Response,next:NextFunction) => {
-  const { id } = req.params;
-
+  const id = (req as any).user?.id;
   try {
     const result = await deleteUserService(id.toString());
     res.json(result);
@@ -72,3 +71,4 @@ export const logout = (req: Request, res: Response) => {
 
   res.status(200).json({ message: "Déconnecté avec succès" });
 };
+
