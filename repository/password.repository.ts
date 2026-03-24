@@ -1,5 +1,5 @@
-import { prisma } from "../config/prisma";
-import { Prisma } from "@prisma/client";
+
+
 import { encrypt } from "../utils/Encrypt";
 
 export const passwordRepository = {
