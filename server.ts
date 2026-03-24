@@ -1,7 +1,6 @@
 import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 // @ts-ignore
-import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
 import userRoute from "./routes/users.routes";
@@ -55,13 +54,10 @@ app.use("/reciters", express.static("public/reciters"));
 
 
 
-// Adapter Prisma (optionnel si tu veux utiliser PrismaPg)
-const connectionString = process.env.DATABASE_URL!;
-const adapter = new PrismaPg({ connectionString });
-export const prisma = new PrismaClient({ adapter });
+export const prisma = new PrismaClient();
 
 
-
+app.use("/", systemRoutes);
 app.use("/auth", authRoute);
 app.use("/users", userRoute);
 app.use("/users",adminRoute);
@@ -69,12 +65,7 @@ app.use("/password", passwordRoute);
 app.use("/reciter", reciterRoute);
 app.use("/services", servicesRoute);
 app.use("/media", mediaRoute);
-app.use(
-  "/test",
-  express.static(path.resolve("coverage/lcov-report"))
-);
 
-app.use("/", systemRoutes);
 
 
 app.use(errorHandlerMiddleware)
