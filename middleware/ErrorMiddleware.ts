@@ -2,13 +2,20 @@ import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/AppError";
 
 export const errorHandlerMiddleware = (
-  err: AppError,
-  req: Request,
-  res: Response,
-  next: NextFunction
+    err: any,
+    req: Request,
+    res: Response,
+    next: NextFunction
 ) => {
-  console.error(err.stack);
-  const statusCode = err.statusCode || 500;
-  const message = err.message || "Erreur serveur inconnue";
-  res.status(statusCode).json({ message });
+  console.error("💥 Error:", err);
+
+  if (err instanceof AppError) {
+    return res.status(err.statusCode || 400).json({
+      error: err.message,
+    });
+  }
+
+  return res.status(500).json({
+    error: "Erreur serveur",
+  });
 };

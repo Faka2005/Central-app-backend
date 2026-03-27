@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { passwordService } from "../service/password.service";
 import { password } from "../schema";
-import { Prisma } from "@prisma/client";
 import { AppError } from "../utils/AppError";
+import {prisma} from "../config/prisma"
+import {Prisma} from "@prisma/client";
 export const passwordController = {
 
   // CREATE

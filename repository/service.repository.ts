@@ -10,8 +10,7 @@ export const serviceRepository = {
   },
   findAll: (limit = 20, skip = 0) => {
     return prisma.service.findMany({
-      take: limit,
-      skip,
+
     });
   },
 

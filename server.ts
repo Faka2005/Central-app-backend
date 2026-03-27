@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 // @ts-ignore
 import { PrismaClient } from "@prisma/client";
 
@@ -40,10 +40,10 @@ import { errorHandlerMiddleware } from "./middleware/ErrorMiddleware";
 
 //app.use(cors(corsOptions));
 
-app.use(cors({
-  origin: true,
-  credentials: true,
-}));
+//app.use(cors({
+//  origin: true,
+//  credentials: true,
+//}));
 
 
 
@@ -54,7 +54,18 @@ app.use("/reciters", express.static("public/reciters"));
 
 
 
-export const prisma = new PrismaClient();
+import { prisma } from "./config/prisma";
+
+async function testDB() {
+  try {
+    await prisma.$connect();
+    console.log("✅ DB connectée");
+  } catch (err) {
+    console.error("❌ DB erreur:", err);
+  }
+}
+
+testDB();
 
 
 app.use("/", systemRoutes);
