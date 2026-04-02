@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 // @ts-ignore
 import { PrismaClient } from "@prisma/client";
-
+import { prisma } from "./config/prisma";
 import userRoute from "./routes/users.routes";
 import passwordRoute from "./routes/passwords.routes";
 import reciterRoute from "./routes/reciter.routes";
@@ -54,7 +54,7 @@ app.use("/reciters", express.static("public/reciters"));
 
 
 
-import { prisma } from "./config/prisma";
+
 
 async function testDB() {
   try {

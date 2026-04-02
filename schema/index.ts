@@ -45,7 +45,22 @@ const message = z.object({
   content: z.string().min(1, "Message vide"),
 });
 
+/**
+ * PROFIL
+ */
 
 
-export { message, service, UserRegister, UserLogin, password };
+const interestSchema = z.object({
+  name: z.string().min(1)
+})
+const profil = z.object({
+  firstname: z.string(),
+  lastname: z.string(),
+  bio: z.string().optional(),
+  interests: z.array(interestSchema).optional(),
+  niveau: z.string(),
+  campus: z.string(),
+  isTutor: z.boolean().default(false)
+})
+export { message, service, UserRegister, UserLogin, password ,profil};
 
