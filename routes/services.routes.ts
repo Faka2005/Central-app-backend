@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { serviceController } from "../controllers/service.controller";
-import { AuthUserOrAdmin } from "../middleware/AuthUserOrAdminMiddleware";
 import { AuthAdmin } from "../middleware/AuthAdminMiddleware";
 
 const router = Router();
@@ -27,13 +26,13 @@ router.post("/", AuthAdmin, serviceController.create);
  * PUT /services/:id
  * Modifier un service
  */
-router.put("/:id", AuthUserOrAdmin, serviceController.updateService);
+router.put("/:id", AuthAdmin, serviceController.updateService);
 
 /**
  * PATCH /services/:id/etat
  * Modifier seulement l'état
  */
-router.patch("/:id/etat", AuthUserOrAdmin, serviceController.updateEtat);
+router.patch("/:id/etat", AuthAdmin, serviceController.updateEtat);
 
 /**
  * DELETE /services/:id

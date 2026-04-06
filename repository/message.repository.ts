@@ -1,6 +1,7 @@
 import { prisma } from "../config/prisma";
 import { Message } from "@prisma/client";
 
+// @ts-ignore
 export const messagerepository = {
 
   // trouver un message par son id
@@ -64,14 +65,19 @@ export const messagerepository = {
     })
   },
   //Supprimer une conversation
-  deleteConversation:async(userid:string,friendid:string)=>{
+  deleteConversation:async(userid:string,friendid:string)=> {
     return prisma.message.deleteMany({
-        where:{
-            OR:[
-                {senderId:userid ,receiverId:friendid},
-                {senderId:friendid,receiverId:userid}
-            ]
-        }
+      where: {
+        OR: [
+          {senderId: userid, receiverId: friendid},
+          {senderId: friendid, receiverId: userid}
+        ]
+      }
+    })
+  },
+  updateIsRead:async(id:string,isRead:boolean)=>{
+    return prisma.message.update({
+      where:{id},{isRead:isRead}
     })
   }
 };

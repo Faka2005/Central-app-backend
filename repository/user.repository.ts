@@ -6,7 +6,7 @@ export const userRepository = {
   findById: (id: string) => {
     return prisma.user.findUnique({
       where: { id },
-      include: { profil: true },
+
     });
   },
 

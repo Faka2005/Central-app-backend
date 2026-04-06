@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { registerService, loginService ,deleteUserService} from "../service/auth.service";
+import {registerService, loginService, deleteUserService, meService} from "../service/auth.service";
 import { UserLogin, UserRegister } from "../schema";
 import { AppError } from "../utils/AppError";
+import {AuthRequest} from "../utils/VerifyToken";
 
 
 export const register = async (req: Request, res: Response,next:NextFunction) => {
@@ -34,13 +35,13 @@ export const login = async (req: Request, res: Response,next:NextFunction) => {
       httpOnly: true,       // inaccessible côté JavaScript
       secure: process.env.NODE_ENV === "production", // seulement HTTPS en prod
       sameSite: "strict",   // protection CSRF
-      maxAge: 1000 * 60 * 60 * 24, // 1 jour en millisecondes
+      maxAge: 1000 * 60 * 60 * 24, // 1 jour en millisecondes,
+      path: "/", // cookie disponible sur tout le site
     });
 
     //  Optionnel : renvoyer un message ou user info dans le body
     res.status(200).json({
-      message: result.message,
-      user: result.user || null, 
+      message: result.message
     });
     
 
@@ -50,9 +51,11 @@ export const login = async (req: Request, res: Response,next:NextFunction) => {
   }
 };
 
-export const deleteUser = async (req: Request, res: Response,next:NextFunction) => {
-  const { id } = req.params;
-
+export const deleteUser = async (req: AuthRequest, res: Response,next:NextFunction) => {
+  const id = req.user?.id // vient du middleware auth;
+  if (!id) {
+    return res.status(401).json({ message: "Utilisateur non trouvé" });
+  }
   try {
     const result = await deleteUserService(id.toString());
     res.json(result);
@@ -72,3 +75,25 @@ export const logout = (req: Request, res: Response) => {
 
   res.status(200).json({ message: "Déconnecté avec succès" });
 };
+
+
+export const me = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user?.id // vient du middleware auth
+if (!userId) {
+  throw new AppError("Utilisateur non trouvé", 401);
+}
+    const user = await meService(userId)
+        const filteredUser = {
+      username: user.user.username,
+      email: user.user.email,
+      createdAt: user.user.createdAt,
+    };
+
+    res.status(200).json(filteredUser);
+    
+    
+  } catch (err) {
+    next(err instanceof AppError ? err : new AppError("Erreur serveur", 500))
+  }
+}

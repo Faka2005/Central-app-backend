@@ -11,6 +11,6 @@ export const getUserById=async  (req:Request,res:Response,next:NextFunction)=>{
        next(e instanceof AppError ? e:new AppError("Erreur serveur"));
    }
 }
-export const resetUserPassword=async (req:Request,res:Response,next:NextFunction)=>{
-    try
-}
+//export const resetUserPassword=async (req:Request,res:Response,next:NextFunction)=>{
+//    try
+//}

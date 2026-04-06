@@ -10,6 +10,7 @@ export const passwordRepository = {
       where: { id },
     });
   },
+  
 
   // Trouver tous les mots de passe avec pagination
   findAll: (limit = 20, skip = 0) => {

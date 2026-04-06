@@ -9,7 +9,7 @@ import { generateToken } from "../utils/GeneratedToken";
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export const registerService = async (data: any) => {
-  const { email, password } = data;
+  const {username, email, password } = data;
 
   const existingUser = await userRepository.findByEmail(email);
 
@@ -20,6 +20,7 @@ export const registerService = async (data: any) => {
   const hashedPassword = await HashPassword(password);
 
   const user = await userRepository.create({
+    username,
     email,
     password: hashedPassword,
     role: "USER",
@@ -72,3 +73,13 @@ export const deleteUserService = async (id: string) => {
   };
 };
 
+
+export const meService = async (userId: string) => {
+  const user = await userRepository.findById(userId)
+
+  if (!user) {
+    throw new AppError("User not found", 404)
+  }
+
+  return { user }
+}
