@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { prisma } from '../server';
+import { prisma } from "../config/prisma";
 import { AuthAdmin } from '../middleware/AuthAdminMiddleware';
 import express, { Request, Response } from "express";
 import { AuthUserOrAdmin } from '../middleware/AuthUserOrAdminMiddleware';
@@ -11,7 +11,7 @@ const router = Router();
 
 
 // GET /users → liste tous les utilisateurs
-router.get('/',AuthAdmin, async (req:Request, res:Response) => {
+router.get('/', async (req:Request, res:Response) => {
   try {
     const users = await prisma.user.findMany();
     res.json(users);

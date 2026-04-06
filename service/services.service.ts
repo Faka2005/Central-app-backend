@@ -1,6 +1,6 @@
 import { serviceRepository } from "../repository/service.repository";
 import { Prisma } from "@prisma/client";
-import { prisma } from "../server";
+
 
 export const serviceService = {
 

@@ -39,7 +39,7 @@ export const serviceController = {
       const services = await serviceService.getAll();
       res.json(services);
     } catch (err) {
-      next(err instanceof AppError ? err : new AppError("Erreur serveur"));
+      next(err instanceof AppError ? err : new AppError("Erreur serveur : "+ err   ));
     }
   },
 

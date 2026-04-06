@@ -5,7 +5,8 @@ import { AppError } from "../utils/AppError";
 import {AuthRequest} from "../utils/VerifyToken";
 
 
-export const register = async (req: Request, res: Response,next:NextFunction) => {
+export const register = async (req: Request, res: Response) => {
+  console.log("BODY:", req.body);
   const parsed = UserRegister.safeParse(req.body);
 
   if (!parsed.success) {
@@ -14,10 +15,10 @@ export const register = async (req: Request, res: Response,next:NextFunction) =>
 
   try {
     const result = await registerService(parsed.data);
+    console.log("RESULT:", result);
     res.status(201).json(result);
   } catch (err) {
     console.error(err);
-    next(err instanceof AppError ? err : new AppError("Erreur serveur"));
   }
 };
 

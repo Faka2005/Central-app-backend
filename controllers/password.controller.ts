@@ -1,13 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 import { passwordService } from "../service/password.service";
 import { password } from "../schema";
-import { Prisma } from "@prisma/client";
 import { AppError } from "../utils/AppError";
+import {prisma} from "../config/prisma"
+import {Prisma} from "@prisma/client";
 export const passwordController = {
 
   // CREATE
   create: async (req: Request, res: Response,next:NextFunction) => {
-    const { userId } = req.params;
+    const userId = (req as any).user?.id;
 
     const parsed = password.safeParse(req.body);
 
@@ -30,7 +31,8 @@ export const passwordController = {
 
   // READ
   getAllForUser: async (req: Request, res: Response,next:NextFunction) => {
-    const { userId } = req.params;
+    const userId = (req as any).user?.id;
+
 
     try {
       const passwords = await passwordService.getPasswordsForUser(userId.toString());

@@ -9,7 +9,8 @@ export const messageController = {
 
     try {
 
-      const senderId = req.user.id;
+      const senderId = req.user?.id;
+
 
       const parsed = message.safeParse(req.body);
 

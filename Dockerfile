@@ -18,7 +18,7 @@ RUN npm install -g nodemon
 
 # Copier le reste du projet
 COPY . .
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
 # Générer le client Prisma
 RUN npx prisma generate
 

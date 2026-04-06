@@ -1,7 +1,4 @@
-Voici **ton fichier TODO complété avec les routes**.
-Je garde le même format pour que tu puisses **le copier directement dans `TODO.md`**.
 
----
 
 # 📝 Backend TODO
 

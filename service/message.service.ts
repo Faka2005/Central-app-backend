@@ -1,15 +1,14 @@
 
 import { messagerepository } from "../repository/message.repository";
 import { AppError } from "../utils/AppError";
-import { prisma } from "../server";
 import { fr } from "zod/v4/locales";
 import { userRepository } from "../repository/user.repository";
 
 export const messageservice={
-    sendMessage:async(
-        senderId:string,
-        receiverId:string,
-        content:string
+    sendMessage: async (
+        senderId: string ,
+        receiverId: string,
+        content: string
     )=>{
         // Vérifie que le message est pas vide
         if (!content || content.trim( )==="") {
