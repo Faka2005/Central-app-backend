@@ -1,6 +1,5 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { userRepository } from "../repository/user.repository";
+
+import { authRepository } from "./auth.repository";
 import { AppError } from "../utils/AppError";
 import { ComparePassword } from "../utils/ComparePassword";
 import { HashPassword } from "../utils/HashPassword";
@@ -11,7 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 export const registerService = async (data: any) => {
   const {username, email, password } = data;
 
-  const existingUser = await userRepository.findByEmail(email);
+  const existingUser = await authRepository.findByEmail(email);
 
   if (existingUser) {
     throw new AppError("Email already used", 400);
@@ -19,7 +18,7 @@ export const registerService = async (data: any) => {
 
   const hashedPassword = await HashPassword(password);
 
-  const user = await userRepository.create({
+  const user = await authRepository.create({
     username,
     email,
     password: hashedPassword,
@@ -38,7 +37,7 @@ export const registerService = async (data: any) => {
 export const loginService = async (data: any) => {
   const { email, password } = data;
 
-  const user = await userRepository.findByEmail(email);
+  const user = await authRepository.findByEmail(email);
 
   if (!user) {
     throw new AppError("Invalid credentials", 401);
@@ -60,13 +59,13 @@ export const loginService = async (data: any) => {
 };
 
 export const deleteUserService = async (id: string) => {
-  const user = await userRepository.findById(id);
+  const user = await authRepository.findById(id);
 
   if (!user) {
     throw new AppError("User not found", 404);
   }
 
-  await userRepository.delete(id);
+  await authRepository.delete(id);
 
   return {
     message: "User deleted",
@@ -75,7 +74,7 @@ export const deleteUserService = async (id: string) => {
 
 
 export const meService = async (userId: string) => {
-  const user = await userRepository.findById(userId)
+  const user = await authRepository.findById(userId)
 
   if (!user) {
     throw new AppError("User not found", 404)
