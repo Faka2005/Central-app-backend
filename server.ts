@@ -8,7 +8,7 @@ import passwordRoute from "./routes/passwords.routes";
 import reciterRoute from "./routes/reciter.routes";
 import adminRoute  from "./routes/admin.routes";
 import mediaRoute from "./routes/media.routes";
-import authRoute from "./routes/auth.routes" ;
+import authRoute from "./auth/auth.routes" ;
 import servicesRoute from "./routes/services.routes";
 import systemRoutes from "./routes/system.routes";
 import path from 'path';

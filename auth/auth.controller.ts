@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import {registerService, loginService, deleteUserService, meService} from "../service/auth.service";
+import {registerService, loginService, deleteUserService, meService} from "./auth.service";
 import { UserLogin, UserRegister } from "../schema";
 import { AppError } from "../utils/AppError";
 import {AuthRequest} from "../utils/VerifyToken";
