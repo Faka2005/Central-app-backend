@@ -1,0 +1,38 @@
+@baseUrl = http://localhost:3000
+@contentType = application/json
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NzBiZTU2My0yNTg2LTQxYTItOTNlZi0zMzM2MjhkZTRjZTIiLCJyb2xlIjoidXNlciIsImlhdCI6MTc3NTUxNzIxMywiZXhwIjoxNzc1NTIwODEzfQ.MatHqmktwa82P_FIFq8vrbWRMeNEQbzvCkoo3bn514g
+# 🔐 REGISTER
+###
+POST {{baseUrl}}/auth/register
+Content-Type: {{contentType}}
+
+{
+  "email": "test@example.com",
+  "password": "password123",
+  "username": "Test User"
+}
+
+### 🔑 LOGIN
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+
+###
+# 👤 GET CURRENT USER
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+###
+# 🚪 LOGOUT
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+###
+# ❌ DELETE USER
+DELETE {{baseUrl}}/auth/delete
+Authorization: Bearer {{token}}
