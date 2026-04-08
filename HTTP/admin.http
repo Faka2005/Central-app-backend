@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:3000
+@contentType = application/json
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4NzBiZTU2My0yNTg2LTQxYTItOTNlZi0zMzM2MjhkZTRjZTIiLCJyb2xlIjoidXNlciIsImlhdCI6MTc3NTUxNzIxMywiZXhwIjoxNzc
+
+
+
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=PhpStorm
+
+###
