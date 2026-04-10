@@ -1,17 +1,10 @@
-Parfait 👍
-Je vais te répondre **comme une vraie spec d’API**, sans code, **route par route**, avec :
 
-* 🔹 Objectif
-* 🔹 Étapes internes (ce que fait le serveur)
-* 🔹 Requête (entrée)
-* 🔹 Réponse (sortie)
-* 🔹 Sécurité
 
 ---
 
-# 1️⃣ AUTHENTIFICATION
+#  AUTHENTIFICATION
 
-## 🔐 POST `/auth/register` — Inscription
+##  POST `/auth/register` — Inscription
 
 ### Objectif
 
@@ -52,7 +45,7 @@ Créer un nouvel utilisateur.
 
 ---
 
-## 🔐 POST `/auth/login` — Connexion
+##  POST `/auth/login` — Connexion
 
 ### Étapes
 
@@ -84,7 +77,7 @@ Créer un nouvel utilisateur.
 
 ---
 
-## 🔐 GET `/auth/me` — Utilisateur connecté
+##  GET `/auth/me` — Utilisateur connecté
 
 ### Étapes
 
@@ -102,13 +95,13 @@ Créer un nouvel utilisateur.
 }
 ```
 
-🔒 **Protégé**
+ **Protégé**
 
 ---
 
-# 2️⃣ UTILISATEUR
+#  UTILISATEUR
 
-## 👤 PATCH `/users/me` — Modifier profil
+##  PATCH `/users/me` — Modifier profil
 
 ### Étapes
 
@@ -136,7 +129,7 @@ Créer un nouvel utilisateur.
 
 ---
 
-## ❌ DELETE `/users/me` — Supprimer compte
+##  DELETE `/users/me` — Supprimer compte
 
 ### Étapes
 
@@ -152,9 +145,9 @@ Créer un nouvel utilisateur.
 
 ---
 
-# 3️⃣ GESTIONNAIRE DE MOTS DE PASSE 🔐
+#  GESTIONNAIRE DE MOTS DE PASSE 
 
-## ➕ POST `/passwords`
+##  POST `/passwords`
 
 ### Étapes
 
@@ -184,7 +177,7 @@ Créer un nouvel utilisateur.
 
 ---
 
-## 📄 GET `/passwords`
+##  GET `/passwords`
 
 ### Étapes
 
@@ -204,9 +197,9 @@ Créer un nouvel utilisateur.
 
 ---
 
-# 4️⃣ CSV 📊
+#  CSV 
 
-## ⬆️ POST `/csv/upload`
+##  POST `/csv/upload`
 
 ### Étapes
 
@@ -233,7 +226,7 @@ Créer un nouvel utilisateur.
 
 ---
 
-## 👀 GET `/csv/:id/preview`
+##  GET `/csv/:id/preview`
 
 ### Étapes
 
@@ -254,9 +247,9 @@ Créer un nouvel utilisateur.
 
 ---
 
-# 5️⃣ MÉDIAS 🖼️🎥
+#  MÉDIAS 
 
-## ⬆️ POST `/media/upload`
+##  POST `/media/upload`
 
 ### Étapes
 
@@ -277,7 +270,7 @@ Créer un nouvel utilisateur.
 
 ---
 
-## 📂 GET `/media`
+##  GET `/media`
 
 ### Étapes
 
@@ -298,9 +291,9 @@ Créer un nouvel utilisateur.
 
 ---
 
-# 6️⃣ LEÇONS / FORMATION 📚
+# LEÇONS / FORMATION 
 
-## ➕ POST `/lessons` (admin)
+##  POST `/lessons` (admin)
 
 ### Étapes
 
@@ -327,7 +320,7 @@ Créer un nouvel utilisateur.
 
 ---
 
-## 📘 GET `/lessons`
+##  GET `/lessons`
 
 ### Étapes
 
@@ -343,9 +336,9 @@ Créer un nouvel utilisateur.
 
 ---
 
-# 7️⃣ ADMIN 👑
+#  ADMIN 
 
-## 👥 GET `/admin/users`
+##  GET `/admin/users`
 
 ### Étapes
 
@@ -361,98 +354,4 @@ Créer un nouvel utilisateur.
 ```
 
 ---
-
-
-# ❤️ `GET /health` — Pourquoi ?
-
-### 👉 À quoi ça sert ?
-
-Dire **“le serveur est vivant et fonctionne”**.
-
-### Qui l’utilise ?
-
-* Docker
-* Render / Railway / VPS
-* Load balancer
-* Monitoring (UptimeRobot, Grafana, etc.)
-* Toi, en debug rapide
-
----
-
-### Exemple concret
-
-Quand tu déploies :
-
-* Le serveur démarre
-* La plateforme appelle automatiquement `/health`
-* Si **200 OK**, elle garde le service
-* Sinon → redémarrage automatique
-
----
-
-### Ce que ça vérifie
-
-Selon ton niveau :
-
-* Serveur Express OK
-* Base de données connectée
-* Prisma OK
-
----
-
-### Réponse simple
-
-```json
-{ "status": "ok" }
-```
-
-Ou plus avancé :
-
-```json
-{
-  "status": "ok",
-  "db": "connected",
-  "uptime": 23423
-}
-```
-
-👉 **Si `/health` échoue → le service est considéré comme mort**
-
----
-
-# ℹ️ `GET /version` — Pourquoi ?
-
-### 👉 À quoi ça sert ?
-
-Savoir **quelle version de ton backend tourne en production**.
-
----
-
-### Cas réels
-
-* Tu déploies une nouvelle version
-* Un bug apparaît
-* Tu appelles `/version`
-* Tu sais **instantanément** :
-
-  * si le bon build est déployé
-  * si le cache/CDN est à jour
-
----
-
-### Réponse
-
-```json
-{ "version": "1.0.0" }
-```
-
-Ou :
-
-```json
-{
-  "version": "1.2.3",
-  "commit": "a8f3c2d",
-  "env": "production"
-}
-```
 
