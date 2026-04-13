@@ -218,7 +218,7 @@ npx prisma db pull
 * [Documentation Prisma](https://www.prisma.io/docs/)
 * [Node.js](https://nodejs.org/en/docs/)
 * [PostgreSQL](https://www.postgresql.org/docs/)
-
+* [Docker](https://docker.io)
 ---
 
 

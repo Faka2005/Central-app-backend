@@ -80,7 +80,7 @@ export const logout = (req: Request, res: Response) => {
 
 export const me = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
-    const userId = req.user?.id // vient du middleware auth
+    const userId = req.user?.id 
 if (!userId) {
   throw new AppError("Utilisateur non trouvé", 401);
 }

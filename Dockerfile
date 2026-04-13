@@ -4,7 +4,9 @@
 # On utilise une image Node.js pour builder l'application
 FROM node:20 AS builder
 
-# Définit le dossier de travail dans le container
+FROM node:26-alpine
+
+# Définir le répertoire de travail
 WORKDIR /app
 
 # Copie uniquement les fichiers de dépendances
