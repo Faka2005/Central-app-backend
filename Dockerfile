@@ -2,7 +2,7 @@
 # Dockerfile pour dev Node + TypeScript + Prisma + Nodemon
 # ===============================
 
-FROM node:20
+FROM node:26-alpine
 
 # Définir le répertoire de travail
 WORKDIR /app

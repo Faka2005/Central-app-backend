@@ -1,12 +1,12 @@
 
 
-# 📘 Central App Backend
+#  Central App Backend
 
 Backend pour **Central App**, une plateforme offrant plusieurs services web (recitation, gestion de mots de passe, galerie, analyse CSV, gestion des amis).
 
 ---
 
-## 🛠️ Technologies
+##  Technologies
 
 * **Node.js** + **TypeScript**
 * **Prisma ORM** pour PostgreSQL
@@ -16,7 +16,7 @@ Backend pour **Central App**, une plateforme offrant plusieurs services web (rec
 
 ---
 
-## 🚀 Fonctionnalités
+##  Fonctionnalités
 
 Le backend gère plusieurs services :
 
@@ -30,7 +30,7 @@ Le backend gère plusieurs services :
 
 ---
 
-## ⚙️ Installation
+##  Installation
 
 1. Cloner le projet :
 
@@ -69,7 +69,7 @@ npx prisma migrate dev --name init
 
 ---
 
-## 🌱 Seed (initialisation des services)
+##  Seed (initialisation des services)
 
 Pour ajouter les services par défaut dans la base de données :
 
@@ -81,7 +81,7 @@ Le seed utilise `createMany({ skipDuplicates: true })` pour éviter les doublons
 
 ---
 
-## 🚀 Lancer le serveur
+##  Lancer le serveur
 
 ```bash
 npm run dev
@@ -92,7 +92,7 @@ npm run dev
 
 ---
 
-## 🔧 Structure du projet
+##  Structure du projet
 
 ```
 Central-app-backend/
@@ -102,7 +102,7 @@ Central-app-backend/
 │   ├─ seed.ts               # Seed initial des services
 │   └─ migrations/           # Migrations
 │
-├─ lib/
+├─ config/
 │   └─ prisma.ts             # Client Prisma partagé
 │
 ├─ server.ts                 # Point d’entrée du serveur
@@ -112,7 +112,7 @@ Central-app-backend/
 
 ---
 
-## ⚡ Bonnes pratiques
+##  Bonnes pratiques
 
 * **Ne jamais importer le serveur dans le seed** (évite les conflits Prisma)
 * **Toujours utiliser `createMany` avec `skipDuplicates: true`** pour le seed
@@ -125,12 +125,12 @@ npx prisma db pull
 
 ---
 
-## 📖 Liens utiles
+##  Liens utiles
 
 * [Documentation Prisma](https://www.prisma.io/docs/)
 * [Node.js](https://nodejs.org/en/docs/)
 * [PostgreSQL](https://www.postgresql.org/docs/)
-
+* [Docker](https://docker.io)
 ---
 
 
