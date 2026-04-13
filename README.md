@@ -10,8 +10,8 @@ Backend pour **Central App**, une plateforme offrant plusieurs services web (rec
 
 * **Node.js** + **TypeScript**
 * **Prisma ORM** pour PostgreSQL
-* **Express.js / Fastify** (selon votre serveur actuel)
-* **PostgreSQL** (locale ou Data Proxy)
+* **Express.js 
+* **PostgreSQL**
 * **ts-node** pour exécuter le seed et le serveur en développement
 
 ---
@@ -20,15 +20,24 @@ Backend pour **Central App**, une plateforme offrant plusieurs services web (rec
 
 Le backend gère plusieurs services :
 
-| Service                       | Description                                           | Route          |
-| ----------------------------- | ----------------------------------------------------- | -------------- |
-| Service de récitation         | Écoutez et gérez vos sourates préférées avec playlist | `/recitation`  |
-| Gestionnaire de mots de passe | Gérez vos mots de passe de manière sécurisée          | `/password`    |
-| Galerie d’images              | Stockez et visualisez vos images facilement           | `/gallery`     |
-| Analyse CSV                   | Importez et analysez vos fichiers CSV                 | `/analyse-csv` |
-| Gestion des amis              | Gérez votre réseau d’amis et partagez des contenus    | `/friends`     |
 
 ---
+
+##  Services disponibles
+
+| Service                       | Description                                                 | Route          |
+| ----------------------------- | ----------------------------------------------------------- | -------------- |
+| Authentification              | Gestion des comptes utilisateurs (inscription, connexion)   | `/auth`        |
+| Gestionnaire de mots de passe | Stockage sécurisé et gestion des mots de passe              | `/password`    |
+| Galerie d’images              | Upload, stockage et consultation d’images                   | `/gallery`     |
+| Analyse CSV                   | Importation et analyse de fichiers CSV                      | `/analyse-csv` |
+| Gestion des amis              | Gestion du réseau d’amis et interactions entre utilisateurs | `/friends`     |
+
+---
+
+
+
+
 
 ##  Installation
 
@@ -97,17 +106,96 @@ npm run dev
 ```
 Central-app-backend/
 │
-├─ prisma/
-│   ├─ schema.prisma         # Schéma Prisma
-│   ├─ seed.ts               # Seed initial des services
-│   └─ migrations/           # Migrations
+Central-app-backend/
+│
+src/
 │
 ├─ config/
-│   └─ prisma.ts             # Client Prisma partagé
+│   ├─ env.ts
+│   ├─ jwt.ts
+│   └─ prisma.ts
+├─ user/
+│   ├─ user.controller.ts
+│   ├─ user.service.ts
+│   ├─ user.repository.ts
+│   ├─ user.routes.ts
+│   └─ user.types.ts
 │
-├─ server.ts                 # Point d’entrée du serveur
-├─ package.json
-└─ tsconfig.json
+├─ auth/
+│   ├─ auth.controller.ts
+│   ├─ auth.service.ts
+│   ├─ auth.middleware.ts
+│   └─ auth.routes.ts
+│
+├─ service/             
+│   ├─ service.controller.ts
+│   ├─ service.service.ts
+│   ├─ service.repository.ts
+│   ├─ service.routes.ts
+│   └─ service.types.ts
+│
+├─ friend/             
+│   ├─ friend.controller.ts
+│   ├─ friend.service.ts
+│   ├─ friend.repository.ts
+│   ├─ friend.routes.ts
+│   └─ friend.types.ts
+|
+├─ message/             
+│   ├─ message.controller.ts
+│   ├─ message.service.ts
+│   ├─ message.repository.ts
+│   ├─ message.routes.ts
+│   └─ message.types.ts
+|
+├─ media/             
+│   ├─ media.controller.ts
+│   ├─ media.service.ts
+│   ├─ media.repository.ts
+│   ├─ media.routes.ts
+│   └─ media.types.ts
+|
+├─ password/             
+│   ├─ password.controller.ts
+│   ├─ password.service.ts
+│   ├─ password.repository.ts
+│   ├─ password.routes.ts
+│   └─ password.types.ts
+|
+├─ csv/             
+│   ├─ csv.controller.ts
+│   ├─ csv.service.ts
+│   ├─ csv.repository.ts
+│   ├─ csv.routes.ts
+│   └─ csv.types.ts
+|
+└─ system/
+│
+├─ middleware/
+│   ├─ auth/
+│   │   ├─ authUser.middleware.ts
+│   │   ├─ authAdmin.middleware.ts
+│   │   └─ authUserOrAdmin.middleware.ts
+│   │
+│   └─ error.middleware.ts
+│
+├─ routes/
+│   └─ index.ts
+│
+├─ prisma/
+│   ├─ schema.prisma
+│   ├─ seeds/
+│   │   ├─ index.ts
+│   │   ├─ service.seed.ts
+│   │   └─ user.seed.ts
+│   └─ migrations/
+│
+├─ utils/
+│
+├─ types/
+│
+├─ app.ts
+└─ server.ts
 ```
 
 ---

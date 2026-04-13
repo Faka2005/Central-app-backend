@@ -1,30 +1,57 @@
 # ===============================
-# Dockerfile pour dev Node + TypeScript + Prisma + Nodemon
+#  STAGE 1 : BUILD
 # ===============================
+# On utilise une image Node.js pour builder l'application
+FROM node:20 AS builder
 
 FROM node:26-alpine
 
 # Définir le répertoire de travail
 WORKDIR /app
 
-# Copier seulement package.json et package-lock.json pour profiter du cache
+# Copie uniquement les fichiers de dépendances
+#  permet d'utiliser le cache Docker (plus rapide)
 COPY package*.json ./
 
-# Installer les dépendances
+# Installe toutes les dépendances (dev incluses)
 RUN npm install
 
-# Installer nodemon globalement
-RUN npm install -g nodemon
-
-# Copier le reste du projet
+# Copie tout le code source
 COPY . .
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
-# Générer le client Prisma
+
+# Génère le client Prisma (obligatoire pour fonctionner)
 RUN npx prisma generate
 
-# Exposer le port
+# Compile le projet TypeScript → JavaScript (dossier dist)
+RUN npm run build
+
+
+# ===============================
+#  STAGE 2 : PRODUCTION
+# ===============================
+# Nouvelle image plus légère pour exécuter l'app
+FROM node:20
+
+# Définir le dossier de travail
+WORKDIR /app
+
+# Copier uniquement les dépendances nécessaires
+COPY package*.json ./
+
+# Installer uniquement les dépendances de production
+RUN npm install --only=production
+
+# Copier le code compilé depuis le stage builder
+COPY --from=builder /app/dist ./dist
+
+# Copier les dépendances déjà installées (plus rapide)
+COPY --from=builder /app/node_modules ./node_modules
+
+# Copier le dossier Prisma (schéma + migrations)
+COPY --from=builder /app/prisma ./prisma
+
+# Expose le port utilisé par ton serveur
 EXPOSE 3000
 
-# Lancer le serveur avec nodemon (surveiller les fichiers .ts)
-CMD ["npm", "run","dev"]
-
+# Commande de démarrage en production
+CMD ["node", "dist/server.js"]
