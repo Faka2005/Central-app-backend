@@ -62,5 +62,45 @@ const profil = z.object({
   campus: z.string(),
   isTutor: z.boolean().default(false)
 })
-export { message, service, UserRegister, UserLogin, password ,profil};
+
+
+
+ const lesson = z.object({
+  title: z
+    .string()
+    .min(5, "Le titre doit faire au moins 5 caractères")
+    .max(100, "Le titre est trop long"),
+  
+  content: z
+    .string()
+    .min(20, "L'énoncé doit être plus détaillé"),
+  
+  niveau: z.enum({"Débutant":"Débutant", "Intermédiaire":"Intermédiaire", "Avancé":"Avancé"}  , 
+    ( "Le niveau doit être Débutant, Intermédiaire ou Avancé" ),  ),
+
+    language: z.string().min(1, "Le langage est requis (ex: javascript)"),
+
+  starterCode: z
+    .string()
+    .min(1, "Le code de départ ne peut pas être vide"),
+
+  solution: z
+    .string()
+    .optional(), 
+    
+  validation: z
+    .string()
+    .refine((val) => {
+      try {
+        new RegExp(val);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }, "La Regex de validation n'est pas valide"),
+});
+
+
+
+export { message, service, UserRegister, UserLogin, password ,profil, lesson};
 

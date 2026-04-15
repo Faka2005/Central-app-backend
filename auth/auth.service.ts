@@ -49,7 +49,7 @@ export const loginService = async (data: any) => {
     throw new AppError("Invalid credentials", 401);
   }
 
-  const token = generateToken({ userId: user.id, role: "user" });
+  const token = generateToken({ id: user.id, role: "user" });
 
   return {
     user,

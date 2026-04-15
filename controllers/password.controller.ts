@@ -4,18 +4,21 @@ import { password } from "../schema";
 import { AppError } from "../utils/AppError";
 import {prisma} from "../config/prisma"
 import {Prisma} from "@prisma/client";
+import { AuthRequest } from "../utils/VerifyToken";
 export const passwordController = {
 
   // CREATE
-  create: async (req: Request, res: Response,next:NextFunction) => {
-    const userId = (req as any).user?.id;
+  create: async (req: AuthRequest, res: Response,next:NextFunction) => {
+    const userId = req.user?.id;
 
     const parsed = password.safeParse(req.body);
 
     if (!parsed.success) {
       return res.status(400).json(parsed.error.format());
     }
-
+    if (!userId) {
+      return res.status(401).json({ message: "Utilisateur non connecté" });
+    }
     try {
       await passwordService.createPassword(userId.toString(), parsed.data as Prisma.PasswordCreateInput);
 
@@ -30,10 +33,12 @@ export const passwordController = {
   },
 
   // READ
-  getAllForUser: async (req: Request, res: Response,next:NextFunction) => {
-    const userId = (req as any).user?.id;
+  getAllForUser: async (req: AuthRequest, res: Response,next:NextFunction) => {
+    const userId = req.user?.id;
 
-
+    if (!userId) {
+      return res.status(401).json({ message: "Utilisateur non connecté" });
+    }
     try {
       const passwords = await passwordService.getPasswordsForUser(userId.toString());
 

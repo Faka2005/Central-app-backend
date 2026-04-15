@@ -22,6 +22,7 @@ model User {
 
   sentMessages     Message[]  @relation("SentMessages")
   receivedMessages Message[]  @relation("ReceivedMessages")
+
   passwords        Password[] @relation("UserPasswords")
 }
 
@@ -33,12 +34,11 @@ model Profil {
   interests Interest[]
   niveau    String
   campus    String
-  isTutor   Boolean    @default(false)
 
   userId String? @unique
   user   User?   @relation("UserProfil", fields: [userId], references: [id])
 
-  courses TutorLesson[]
+  courses Lesson[]
 }
 
 model Interest {
@@ -47,14 +47,18 @@ model Interest {
   profils Profil[]
 }
 
-model TutorLesson {
-  id        String   @id @default(uuid())
-  title     String
-  content   String
-  niveau    String
-  tutorId   String
-  tutor     Profil   @relation(fields: [tutorId], references: [id])
-  createdAt DateTime @default(now())
+model Lesson {
+  id           String   @id @default(uuid())
+  title        String
+  content      String   // L'énoncé (Markdown supporté)
+  niveau       String
+  language     String   // ex: "javascript"
+  
+  starterCode  String   // Le code affiché par défaut dans Monaco
+  solution     String?  // Le résultat attendu (ex: "10")
+  validation   String?  // Une Regex stockée sous forme de String
+  
+  createdAt    DateTime @default(now())
 }
 
 model Friend {

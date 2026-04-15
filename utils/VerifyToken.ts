@@ -11,7 +11,8 @@ export interface AuthRequest extends Request {
 }
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
-  // 1️⃣ récupérer le token : header Bearer OU cookie
+
+  //  récupérer le token : header Bearer OU cookie
   const authHeader = req.headers.authorization;
   const cookieToken = req.cookies?.token;
 
@@ -24,8 +25,8 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { userId: string; role: string };
-    req.user = { id: decoded.userId, role: decoded.role };
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: string; role: string };
+    req.user = { id: decoded.id, role: decoded.role };
     next();
   } catch (err) {
     return res.status(401).json({ message: "Token invalide" });

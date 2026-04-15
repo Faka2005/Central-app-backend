@@ -4,8 +4,8 @@ import { AuthUser } from "../middleware/AuthUserMiddleware";
 
 const router = Router();
 
-router.post("/:userId", AuthUser, passwordController.create);
-router.get("/user/:userId", AuthUser, passwordController.getAllForUser);
+router.post("/", AuthUser, passwordController.create);
+router.get("/user/", AuthUser, passwordController.getAllForUser);
 router.put("/:id", AuthUser, passwordController.update);
 router.delete("/:id", AuthUser, passwordController.delete);
 

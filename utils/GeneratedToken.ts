@@ -1,11 +1,10 @@
-import { Secret } from "jsonwebtoken";
 
 
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, JWT_OPTIONS } from "../config/jwt";
 
 interface TokenPayload {
-  userId: string;
+  id: string;
   role: "user" | "admin";
 }
 

@@ -19,8 +19,7 @@ app.use(cookieParser());
 import cors, { CorsOptions } from "cors";
 import { errorHandlerMiddleware } from "./middleware/ErrorMiddleware";
 
-
-//const allowedOrigins = [
+  //const allowedOrigins = [
 //  "http://localhost:5173",
 //  process.env.FRONTEND_URL,
 //].filter(Boolean) as string[];
@@ -39,11 +38,10 @@ import { errorHandlerMiddleware } from "./middleware/ErrorMiddleware";
 //};
 
 //app.use(cors(corsOptions));
-
-//app.use(cors({
-//  origin: true,
-//  credentials: true,
-//}));
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+}));
 
 
 

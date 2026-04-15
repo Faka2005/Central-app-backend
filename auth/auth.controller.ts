@@ -32,19 +32,20 @@ export const login = async (req: Request, res: Response,next:NextFunction) => {
   try {
     const result = await loginService(parsed.data);
     //  Stocker le token JWT dans un cookie HTTP-only sécurisé
-    res.cookie("token", result.token, {
-      httpOnly: true,       // inaccessible côté JavaScript
-      secure: process.env.NODE_ENV === "production", // seulement HTTPS en prod
-      sameSite: "strict",   // protection CSRF
-      maxAge: 1000 * 60 * 60 * 24, // 1 jour en millisecondes,
-      path: "/", // cookie disponible sur tout le site
-    });
+res.cookie("token", result.token, {
+  httpOnly: true,
+  secure: false,       
+  sameSite: "lax",     
+  maxAge: 1000 * 60 * 60 * 24,
+  path: "/",
+});
 
     //  Optionnel : renvoyer un message ou user info dans le body
     res.status(200).json({
-      message: result.message
+      message: result.message,
+      user: result.user,
     });
-    
+   
 
   } catch (err) {
     console.error(err);
@@ -92,7 +93,7 @@ if (!userId) {
     };
 
     res.status(200).json(filteredUser);
-    
+    console.log("User info retrieved successfully");
     
   } catch (err) {
     next(err instanceof AppError ? err : new AppError("Erreur serveur", 500))
