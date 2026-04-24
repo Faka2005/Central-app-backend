@@ -38,7 +38,7 @@ model Profil {
   userId String? @unique
   user   User?   @relation("UserProfil", fields: [userId], references: [id])
 
-  courses Lesson[]
+
 }
 
 model Interest {
