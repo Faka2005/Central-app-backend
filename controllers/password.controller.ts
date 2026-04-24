@@ -5,10 +5,10 @@ import { AppError } from "../utils/AppError";
 import {prisma} from "../config/prisma"
 import {Prisma} from "@prisma/client";
 import { AuthRequest } from "../utils/VerifyToken";
-export const passwordController = {
+
 
   // CREATE
-  create: async (req: AuthRequest, res: Response,next:NextFunction) => {
+  export const create= async (req: AuthRequest, res: Response,next:NextFunction) => {
     const userId = req.user?.id;
 
     const parsed = password.safeParse(req.body);
@@ -30,10 +30,10 @@ export const passwordController = {
       console.error(err);
       next(err instanceof AppError ? err : new AppError("Erreur serveur"));
     }
-  },
+  }
 
   // READ
-  getAllForUser: async (req: AuthRequest, res: Response,next:NextFunction) => {
+  export const getAllForUser= async (req: AuthRequest, res: Response,next:NextFunction) => {
     const userId = req.user?.id;
 
     if (!userId) {
@@ -49,11 +49,11 @@ export const passwordController = {
       next(err instanceof AppError ? err : new AppError("Erreur serveur"));
 
     }
-  },
+  }
 
   // UPDATE
-  update: async (req: Request, res: Response,next:NextFunction) => {
-    const { id } = req.params;
+  export async function update  (req: Request, res: Response,next:NextFunction) {
+    const { id } = req.body;
 
     const parsed = password.partial().safeParse(req.body);
 
@@ -72,11 +72,11 @@ export const passwordController = {
       console.error(err);
       next(err instanceof AppError ? err : new AppError("Erreur serveur"));
     }
-  },
+  }
 
   // DELETE
-  delete: async (req: Request, res: Response,next:NextFunction) => {
-    const { id } = req.params;
+  export async function deletepassword(req: Request, res: Response,next:NextFunction)  {
+    const { id } = req.body;
 
     try {
       await passwordService.delete(id.toString());
@@ -89,5 +89,4 @@ export const passwordController = {
       console.error(err);
       next(err instanceof AppError ? err : new AppError("Erreur serveur"));
     }
-  },
-};
+  }

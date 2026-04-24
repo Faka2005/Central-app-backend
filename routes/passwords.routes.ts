@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { passwordController } from "../controllers/password.controller";
+import { create,getAllForUser, update,deletepassword } from "../controllers/password.controller";
 import { AuthUser } from "../middleware/AuthUserMiddleware";
 
 const router = Router();
 
-router.post("/", AuthUser, passwordController.create);
-router.get("/user/", AuthUser, passwordController.getAllForUser);
-router.put("/:id", AuthUser, passwordController.update);
-router.delete("/:id", AuthUser, passwordController.delete);
+router.post("/", AuthUser, create);
+router.get("/", AuthUser, getAllForUser);
+router.put("/", AuthUser, update);
+router.delete("/", AuthUser, deletepassword);
 
 export default router;

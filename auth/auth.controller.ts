@@ -89,6 +89,7 @@ if (!userId) {
         const filteredUser = {
       username: user.user.username,
       email: user.user.email,
+      role: user.user.role,
       createdAt: user.user.createdAt,
     };
 
