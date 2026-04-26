@@ -9,5 +9,5 @@ interface TokenPayload {
 }
 
 export function generateToken(payload: TokenPayload): string {
-  return jwt.sign(payload, JWT_SECRET, JWT_OPTIONS);
+  return jwt.sign(payload, JWT_SECRET);
 }

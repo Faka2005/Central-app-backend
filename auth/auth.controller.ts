@@ -44,6 +44,7 @@ res.cookie("token", result.token, {
     res.status(200).json({
       message: result.message,
       user: result.user,
+      token:result.token
     });
    
 

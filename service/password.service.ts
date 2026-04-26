@@ -20,9 +20,7 @@ export const passwordService = {
   //  Récupérer tous les mots de passe pour un utilisateur
   getPasswordsForUser: async (userId: string) => {
     const passwords = await passwordRepository.findByUser(userId);
-    if (!passwords || passwords.length === 0) {
-      throw new AppError("Aucun mot de passe trouvé pour cet utilisateur", 404);
-    }
+
 
     return passwords.map((p: any) => {
       try {

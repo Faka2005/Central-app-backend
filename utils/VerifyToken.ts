@@ -11,6 +11,7 @@ export interface AuthRequest extends Request {
 }
 
 export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction) => {
+    console.log("Headers reçus :", req.headers.authorization);
 
   //  récupérer le token : header Bearer OU cookie
   const authHeader = req.headers.authorization;
@@ -29,7 +30,7 @@ export const verifyToken = (req: AuthRequest, res: Response, next: NextFunction)
     req.user = { id: decoded.id, role: decoded.role };
     next();
   } catch (err) {
-    return res.status(401).json({ message: "Token invalide" });
+    return res.status(401).json({ message: "Token invalide" + err});
   }
 };
 

@@ -12,7 +12,7 @@ export const AuthUser = [
     if (req.user.role !== "user") {
       return res.status(403).json({ message: "Accès refusé" });
     }
-
+    console.log("Utilisateur authentifié :", req.user);
     next();
   },
 ];

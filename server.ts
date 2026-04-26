@@ -19,35 +19,16 @@ app.use(cookieParser());
 import cors, { CorsOptions } from "cors";
 import { errorHandlerMiddleware } from "./middleware/ErrorMiddleware";
 
-  //const allowedOrigins = [
-//  "http://localhost:5173",
-//  process.env.FRONTEND_URL,
-//].filter(Boolean) as string[];
-//
-//const corsOptions: CorsOptions = {
-//  origin: (origin, callback) => {
-//    console.log("CORS check, origin:", origin);
-//    if (!origin || allowedOrigins.includes(origin)) {
-//      callback(null, true);
-//    } else {
-//      console.warn("Blocked by CORS:", origin);
-//      callback(new Error("Not allowed by CORS"));
-//    }
-//  },
-//  credentials: true,
-//};
 
-//app.use(cors(corsOptions));
+
 app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true,
+  origin: '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ajoute OPTIONS ici
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'], // Ajoute Accept ici
+  credentials: true // Important si tu utilises des cookies ou des tokens
 }));
 
-
-
-
-
-
+// Optionnel mais efficace : Forcer la réponse aux requêtes OPTIONS
 app.use("/reciters", express.static("public/reciters"));
 
 
@@ -87,7 +68,7 @@ app.use(errorHandlerMiddleware)
 // ----------------------
 
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+const PORT = Number(process.env.PORT) || 3000;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Serveur lancé sur http://0.0.0.0:${PORT}`);
 });
